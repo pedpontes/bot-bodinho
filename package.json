@@ -13,6 +13,13 @@
     "axios": "^1.6.7",
     "cheerio": "^1.0.0-rc.12",
     "discord.js": "^14.14.1",
+    "dotenv": "^16.4.7",
     "openai": "^4.28.0"
+  },
+  "repository": "https://github.com/pedpontes/bot-bodinho.git",
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.3"
   }
 }
