@@ -102,7 +102,6 @@ module.exports = {
       player.on(AudioPlayerStatus.Idle, () => {
         console.log('Player terminou de tocar.');
         connection.destroy();
-        fs.unlinkSync(filePath);
       });
 
       connection.on('error', (error) => {
