@@ -34,8 +34,14 @@ for (const folder of commandFolders) {
     if (!env.token || !env.clientId) return;
 
     const rest = new REST().setToken(env.token);
+
     console.log(
       `Iniciando recarregamento ${commands.length} aplicação (/) comandos.`,
+    );
+
+    await rest.put(
+      Routes.applicationGuildCommands(env.clientId, '1208438581752766484'),
+      { body: commands },
     );
 
     const data = (await rest.put(Routes.applicationCommands(env.clientId), {

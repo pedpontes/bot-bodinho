@@ -1,6 +1,7 @@
-import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
+import { SlashCommandBuilder } from 'discord.js';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
+import { ChatInputCommandInteraction, CacheType } from 'discord.js';
 
 type ItemCsProps = {
   link_item: string;
@@ -20,12 +21,12 @@ module.exports = {
         .setRequired(true),
     ),
 
-  async execute(interation) {
+  async execute(interation: ChatInputCommandInteraction<CacheType>) {
     await interation.reply(
       'Buscando informações, isso pode levar alguns segundos...',
     );
 
-    const url = `https://steamcommunity.com/market/search?appid=730&q=${interation.options.getString('input').split(' ').join('+')}`;
+    const url = `https://steamcommunity.com/market/search?appid=730&q=${interation.options.getString('input')?.split(' ').join('+')}`;
     const itensCs: ItemCsProps[] = [];
     const HTML = (await axios.get(url)).data;
     const $ = cheerio.load(HTML);

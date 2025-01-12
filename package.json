@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "startFull": "yarn build && yarn start"
   },
   "keywords": [],
   "author": "",
@@ -19,7 +22,9 @@
   "repository": "https://github.com/pedpontes/bot-bodinho.git",
   "devDependencies": {
     "@types/node": "^22.10.5",
+    "nodemon": "^3.1.9",
     "prettier": "^3.4.2",
+    "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
   }
 }

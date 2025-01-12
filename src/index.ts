@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
-const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
-const { token } = require('./config.json');
+import { Client, Collection, GatewayIntentBits, Events } from 'discord.js';
+import dev from './config';
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds],
@@ -9,29 +9,42 @@ const client = new Client({
 
 client.commands = new Collection();
 
-const foldersPath = path.join(__dirname, 'commands');
-const commandFolders = fs.readdirSync(foldersPath);
+(() => {
+  const foldersPath = path.join(__dirname, 'commands');
+  const commandFolders = fs.readdirSync(foldersPath);
 
-for (const folder of commandFolders) {
-  const commandsPath = path.join(foldersPath, folder);
-  const commandFiles = fs
-    .readdirSync(commandsPath)
-    .filter((file) => file.endsWith('.js'));
-  for (const file of commandFiles) {
-    const filePath = path.join(commandsPath, file);
-    const command = require(filePath);
-    if ('data' in command && 'execute' in command) {
-      client.commands.set(command.data.name, command);
-    } else {
-      console.log(
-        `[AVISO] O comando em ${filePath} esta faltando "data" ou "execute" propriedade.`,
-      );
+  for (const folder of commandFolders) {
+    const commandsPath = path.join(foldersPath, folder);
+    const commandFiles = fs.readdirSync(commandsPath).filter((file) => {
+      if (file.endsWith('.js')) {
+        return true;
+      } else if (file.endsWith('.ts')) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+
+    for (const file of commandFiles) {
+      const filePath = path.join(commandsPath, file);
+      const command = require(filePath);
+      if ('data' in command && 'execute' in command) {
+        client.commands.set(command.data.name, command);
+      } else {
+        console.log(
+          `[AVISO] O comando em ${filePath} esta faltando "data" ou "execute" propriedade.`,
+        );
+      }
     }
   }
-}
+})();
 
 client.on(Events.InteractionCreate, async (interation) => {
   if (!interation.isChatInputCommand()) return;
+
+  console.log(interation.guildId);
+
+  console.log(interation.client);
 
   const command = interation.client.commands.get(interation.commandName);
 
@@ -58,10 +71,8 @@ client.on(Events.InteractionCreate, async (interation) => {
   }
 });
 
-//evento caso conecte ao servidor discord
-client.once(Events.ClientReady, (readyClient) => {
-  console.log(`Pronto! Logado em ${readyClient.user.tag}`);
+client.once(Events.ClientReady, (readyClient: Client) => {
+  console.log(`Pronto! Logado em ${readyClient.user?.tag}`);
 });
 
-//logar o bot no discord
-client.login(token);
+client.login(dev.token);
