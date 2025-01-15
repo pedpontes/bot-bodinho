@@ -27,14 +27,16 @@ module.exports = {
     ),
 
   async execute(interaction: ChatInputCommandInteraction<CacheType>) {
-    const url = interaction.options.getString('url')?.trim();
+    const urlRaw = interaction.options.getString('url')?.trim();
 
-    if (!url) {
+    if (!urlRaw) {
       await interaction.reply(
         '❌ Você precisa informar um link para a música!',
       );
       return;
     }
+
+    const url = urlRaw.split('&')[0];
 
     if (!ytdl.validateURL(url))
       return await interaction.reply('❌ URL inválida!');
@@ -97,11 +99,13 @@ module.exports = {
       player.on(AudioPlayerStatus.Idle, () => {
         console.log('Player terminou de tocar.');
         connection.destroy();
+        return;
       });
 
       connection.on('error', (error) => {
         console.error('Erro no canal de voz:', error);
         connection.destroy();
+        return;
       });
     } catch (error) {
       console.error('Erro ao executar o comando:', error);
