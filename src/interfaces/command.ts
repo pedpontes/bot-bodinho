@@ -1,6 +1,6 @@
 import { CommandInteraction } from 'discord.js';
 
-export interface Command {
+export interface CommandModel {
   data: {
     name: string;
     description: string;

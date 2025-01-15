@@ -6,8 +6,7 @@
   "scripts": {
     "dev": "nodemon",
     "build": "tsc",
-    "start": "node dist/index.js",
-    "startFull": "yarn build && yarn start"
+    "start": "node dist/index.js"
   },
   "keywords": [],
   "author": "",
@@ -21,7 +20,7 @@
     "ffmpeg-static": "^5.2.0",
     "node-fetch": "^3.3.2",
     "openai": "^4.78.1",
-    "ytdl-core-discord": "^1.3.1"
+    "ytdl-core": "^4.11.5"
   },
   "repository": "https://github.com/pedpontes/bot-bodinho.git",
   "devDependencies": {
