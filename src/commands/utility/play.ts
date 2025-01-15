@@ -43,6 +43,7 @@ module.exports = {
       const { stderr, stdout } = spawn('python3', [
         '-m',
         'yt_dlp',
+        '-q',
         '-x',
         '--audio-format',
         'mp3',
@@ -52,7 +53,7 @@ module.exports = {
       ]);
 
       stderr.on('data', (data) => {
-        console.error(`Erro yt-dlp: ${data}`);
+        throw new Error(data.toString());
       });
 
       await interaction.reply(
