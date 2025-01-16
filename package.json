@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@discordjs/voice": "^0.18.0",
+    "@prisma/client": "^6.2.1",
     "axios": "^1.6.7",
     "cheerio": "^1.0.0-rc.12",
     "discord.js": "^14.14.1",
@@ -20,6 +21,7 @@
     "ffmpeg-static": "^5.2.0",
     "node-fetch": "^3.3.2",
     "openai": "^4.78.1",
+    "prisma": "^6.2.1",
     "ytdl-core": "^4.11.5"
   },
   "repository": "https://github.com/pedpontes/bot-bodinho.git",
