@@ -16,6 +16,13 @@ export async function deploy(client: Client) {
 
     const commands = client.commands.map((command) => command.data.toJSON());
 
+    await rest.put(
+      Routes.applicationGuildCommands(env.clientId, '1208438581752766484'),
+      {
+        body: commands,
+      },
+    );
+
     const data = (await rest.put(Routes.applicationCommands(env.clientId), {
       body: commands,
     })) as unknown as { length: number };

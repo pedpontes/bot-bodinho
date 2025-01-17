@@ -1,0 +1,53 @@
+import { SlashCommandBuilder } from '@discordjs/builders';
+import {
+  ChatInputCommandInteraction,
+  CacheType,
+  GuildMember,
+} from 'discord.js';
+import { musicSessions } from '../../states/music-session';
+import { playMusic } from '../../use-cases/play-music';
+import deleteMusicById from '../../use-cases/delete-music-by-id';
+import loadMusicByChannelId from '../../use-cases/load-music-by-channel';
+
+module.exports = {
+  data: new SlashCommandBuilder()
+    .setName('skip')
+    .setDescription('Pular para a próxima música!'),
+  execute: async (interaction: ChatInputCommandInteraction<CacheType>) =>
+    await execute(interaction),
+};
+
+async function execute(interaction: ChatInputCommandInteraction<CacheType>) {
+  const member = interaction.member as GuildMember;
+  const voiceChannel = member.voice.channel;
+
+  if (!voiceChannel) {
+    await interaction.reply(
+      '⚠️ Você precisa estar em um canal de voz para usar este comando!',
+    );
+    return;
+  }
+
+  const session = musicSessions[voiceChannel.id];
+
+  if (!session) {
+    await interaction.reply('❌ Não há músicas tocando neste canal!');
+    return;
+  }
+  await deleteMusicById(session!.queue[0].id);
+
+  const musicChannelModel = await loadMusicByChannelId(voiceChannel.id);
+  if (!musicChannelModel) return session!.connection.destroy();
+
+  session!.queue = musicChannelModel.queeue || [];
+  // Remova a música atual da fila e toque a próxima
+
+  if (session.queue.length === 0) {
+    session.connection.destroy();
+    delete musicSessions[voiceChannel.id];
+    await interaction.reply('🎶 Não há mais músicas na fila!');
+  } else {
+    playMusic(session);
+    await interaction.reply('⏭️ Música pulada!');
+  }
+}

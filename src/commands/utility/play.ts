@@ -1,15 +1,14 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { spawn } from 'child_process';
+import { spawn, ChildProcessWithoutNullStreams } from 'child_process';
 import {
   ChatInputCommandInteraction,
   CacheType,
   GuildMember,
+  VoiceBasedChannel,
 } from 'discord.js';
 import {
   joinVoiceChannel,
   createAudioPlayer,
-  createAudioResource,
-  VoiceConnectionStatus,
   AudioPlayerStatus,
   NoSubscriberBehavior,
 } from '@discordjs/voice';
@@ -18,6 +17,19 @@ import addMusicToQueeue from '../../use-cases/add-music-to-queeue';
 import loadMusicByChannelId from '../../use-cases/load-music-by-channel';
 import deleteMusicById from '../../use-cases/delete-music-by-id';
 import deleteAllByChannelId from '../../use-cases/delete-musics-by-channel-id';
+import { playMusic } from '../../use-cases/play-music';
+import { musicSessions } from '../../states/music-session';
+
+export type Queeue = {
+  url: string;
+  createdAt: Date;
+  id: string;
+  updatedAt: Date;
+  title: string | null;
+  artist: string | null;
+  album: string | null;
+  channelId: string;
+};
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -29,17 +41,11 @@ module.exports = {
         .setDescription('Envie uma url do YT!')
         .setRequired(true),
     ),
-
-  execute: async (
-    interaction: ChatInputCommandInteraction<CacheType>,
-    recursive?: boolean,
-  ) => await execute(interaction, recursive),
+  execute: async (interaction: ChatInputCommandInteraction<CacheType>) =>
+    await execute(interaction),
 };
 
-async function execute(
-  interaction: ChatInputCommandInteraction<CacheType>,
-  recursive?: boolean,
-) {
+async function execute(interaction: ChatInputCommandInteraction<CacheType>) {
   const member = interaction.member as GuildMember;
   const voiceChannel = member.voice.channel;
 
@@ -51,114 +57,90 @@ async function execute(
   }
 
   try {
-    if (!recursive) {
-      const urlRaw = interaction.options.getString('url')?.trim();
+    const firstMusic = await validationUrlAndAddMusicToChannel(
+      interaction,
+      voiceChannel,
+    );
 
-      if (!urlRaw) {
-        await interaction.reply(
-          '❌ Você precisa informar um link para a música!',
-        );
-        return;
-      }
-
-      const url = urlRaw.split('&')[0];
-
-      if (!ytdl.validateURL(url))
-        return await interaction.reply('❌ URL inválida!');
-
-      const channel = await loadMusicByChannelId(voiceChannel.id);
-
-      if (channel && channel.queeue.length > 0)
-        await interaction.reply('🎶 Adicionado a fila!');
-      else await interaction.reply('🎶 TutsTuts!');
-
-      await addMusicToQueeue(voiceChannel.id, url);
-    }
-
-    const channelMusic = await loadMusicByChannelId(voiceChannel.id);
-
-    if (!channelMusic) {
+    if (!firstMusic) {
       return;
     }
 
-    const { stderr, stdout } = spawn('python3', [
-      '-m',
-      'yt_dlp',
-      '-q',
-      '-x',
-      '--audio-format',
-      'mp3',
-      '-o',
-      '-',
-      channelMusic.queeue[0].url,
-    ]);
+    const channelMusicModel = await loadMusicByChannelId(voiceChannel.id);
+    if (!channelMusicModel) return;
 
-    let resource = createAudioResource(stdout);
+    let session = musicSessions[voiceChannel.id];
 
-    let player = createAudioPlayer({
-      behaviors: {
-        noSubscriber: NoSubscriberBehavior.Play,
-      },
-    });
+    if (!session) {
+      const player = createAudioPlayer({
+        behaviors: {
+          noSubscriber: NoSubscriberBehavior.Play,
+        },
+      });
 
-    const connection = joinVoiceChannel({
-      channelId: voiceChannel.id,
-      guildId: voiceChannel.guild.id,
-      adapterCreator: voiceChannel.guild.voiceAdapterCreator,
-    });
+      const connection = joinVoiceChannel({
+        channelId: voiceChannel.id,
+        guildId: voiceChannel.guild.id,
+        adapterCreator: voiceChannel.guild.voiceAdapterCreator,
+      });
 
-    stderr.on('data', async (data) => {
-      await deleteAllByChannelId(channelMusic.id);
-      if (
-        connection &&
-        connection.state.status !== VoiceConnectionStatus.Destroyed
-      ) {
-        connection.destroy();
-      }
-      throw new Error(data.toString());
-    });
+      session = {
+        player,
+        connection,
+        queue: channelMusicModel.queeue,
+      };
 
-    player.play(resource);
-    connection.subscribe(player);
+      musicSessions[voiceChannel.id] = session;
 
-    connection.on(VoiceConnectionStatus.Ready, () => {
-      console.log('Conectado ao canal de voz!');
-    });
+      player.on(AudioPlayerStatus.Idle, async () => {
+        await deleteMusicById(session!.queue[0].id);
+        const musicChannelModel = await loadMusicByChannelId(voiceChannel.id);
+        if (!musicChannelModel) return session!.connection.destroy();
 
-    player.on(AudioPlayerStatus.Idle, async () => {
-      await deleteMusicById(channelMusic.queeue[0].id);
+        session!.queue = musicChannelModel.queeue || [];
+        if (session!.queue.length === 0) return session!.connection.destroy();
+        playMusic(session!);
+      });
+    }
 
-      const nextMusic = await loadMusicByChannelId(voiceChannel.id);
-      if (nextMusic && nextMusic.queeue.length > 0) {
-        await execute(interaction, true);
-        return;
-      }
-
-      console.log('Player terminou de tocar.');
-      if (
-        connection &&
-        connection.state.status !== VoiceConnectionStatus.Destroyed
-      ) {
-        connection.destroy();
-      }
-      return;
-    });
-
-    connection.on('error', async (error) => {
-      await deleteAllByChannelId(channelMusic.id);
-      console.error('Erro no canal de voz:', error);
-      if (
-        connection &&
-        connection.state.status !== VoiceConnectionStatus.Destroyed
-      ) {
-        connection.destroy();
-      }
-      return;
-    });
+    session.queue = channelMusicModel.queeue;
+    playMusic(session);
   } catch (error) {
     console.error('Erro ao executar o comando:', error);
+    deleteAllByChannelId(voiceChannel.id);
     if (!interaction.replied) {
       await interaction.editReply('❌ Ocorreu um erro ao processar o comando.');
     }
+  }
+}
+
+async function validationUrlAndAddMusicToChannel(
+  interaction: ChatInputCommandInteraction<CacheType>,
+  voiceChannel: VoiceBasedChannel,
+): Promise<boolean> {
+  const urlRaw = interaction.options.getString('url')?.trim();
+
+  if (!urlRaw) {
+    await interaction.reply('❌ Você precisa informar um link para a música!');
+    return false;
+  }
+
+  const url = urlRaw.split('&')[0];
+
+  if (!ytdl.validateURL(url)) {
+    await interaction.reply('❌ URL inválida!');
+    return false;
+  }
+
+  const channel = await loadMusicByChannelId(voiceChannel.id);
+
+  await addMusicToQueeue(voiceChannel.id, url);
+
+  if (channel && channel.queeue.length > 0) {
+    await interaction.reply('🎶 Adicionado a fila!');
+    return false;
+  } else {
+    await interaction.reply('🎶 TutsTuts!');
+    return true;
   }
 }
