@@ -40,7 +40,6 @@ async function execute(interaction: ChatInputCommandInteraction<CacheType>) {
   if (!musicChannelModel) return session!.connection.destroy();
 
   session!.queue = musicChannelModel.queeue || [];
-  // Remova a música atual da fila e toque a próxima
 
   if (session.queue.length === 0) {
     session.connection.destroy();
