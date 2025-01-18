@@ -2,6 +2,7 @@ import { SlashCommandBuilder, GuildMember } from 'discord.js';
 import { ChatInputCommandInteraction, CacheType } from 'discord.js';
 import { getVoiceConnection } from '@discordjs/voice';
 import deleteAllByChannelId from '../../use-cases/delete-musics-by-channel-id';
+import { musicSessions } from '../../states/music-session';
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -24,9 +25,15 @@ module.exports = {
         return;
       }
 
-      await deleteAllByChannelId(channelId);
+      if (!musicSessions[voiceChannel.id as string])
+        throw new Error('Session not found!');
 
-      connection.destroy();
+      const session = musicSessions[voiceChannel?.id as string];
+
+      session.connection?.destroy();
+
+      delete musicSessions[voiceChannel.id as string];
+
       await interation.reply('✅ Bot desconectado do canal de voz!');
       return;
     }

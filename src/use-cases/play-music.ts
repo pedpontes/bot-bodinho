@@ -1,8 +1,18 @@
 import { spawn } from 'child_process';
 import { MusicSession } from '../states/music-session';
-import { createAudioResource } from '@discordjs/voice';
+import { AudioPlayer, createAudioResource } from '@discordjs/voice';
 
 export async function playMusic(session: MusicSession) {
+  if (
+    session!.queue?.length === 0 ||
+    !session.queue ||
+    !session.connection ||
+    !session.player
+  ) {
+    session.connection?.destroy();
+    return;
+  }
+
   const { stdout } = spawn('python3', [
     '-m',
     'yt_dlp',

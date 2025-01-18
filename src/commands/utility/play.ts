@@ -19,6 +19,8 @@ import deleteMusicById from '../../use-cases/delete-music-by-id';
 import deleteAllByChannelId from '../../use-cases/delete-musics-by-channel-id';
 import { playMusic } from '../../use-cases/play-music';
 import { musicSessions } from '../../states/music-session';
+import { info } from 'console';
+import { randomUUID } from 'crypto';
 
 export type Queeue = {
   url: string;
@@ -66,48 +68,39 @@ async function execute(interaction: ChatInputCommandInteraction<CacheType>) {
       return;
     }
 
-    const channelMusicModel = await loadMusicByChannelId(voiceChannel.id);
-    if (!channelMusicModel) return;
-
     let session = musicSessions[voiceChannel.id];
 
-    if (!session) {
-      const player = createAudioPlayer({
-        behaviors: {
-          noSubscriber: NoSubscriberBehavior.Play,
-        },
-      });
+    const player = createAudioPlayer({
+      behaviors: {
+        noSubscriber: NoSubscriberBehavior.Play,
+      },
+    });
 
-      const connection = joinVoiceChannel({
-        channelId: voiceChannel.id,
-        guildId: voiceChannel.guild.id,
-        adapterCreator: voiceChannel.guild.voiceAdapterCreator,
-      });
+    const connection = joinVoiceChannel({
+      channelId: voiceChannel.id,
+      guildId: voiceChannel.guild.id,
+      adapterCreator: voiceChannel.guild.voiceAdapterCreator,
+    });
 
-      session = {
-        player,
-        connection,
-        queue: channelMusicModel.queeue,
-      };
+    session = {
+      ...session,
+      player,
+      connection,
+    };
 
-      musicSessions[voiceChannel.id] = session;
+    musicSessions[voiceChannel.id] = session;
 
-      player.on(AudioPlayerStatus.Idle, async () => {
-        await deleteMusicById(session!.queue[0].id);
-        const musicChannelModel = await loadMusicByChannelId(voiceChannel.id);
-        if (!musicChannelModel) return session!.connection.destroy();
-
-        session!.queue = musicChannelModel.queeue || [];
-        if (session!.queue.length === 0) return session!.connection.destroy();
-        playMusic(session!);
-      });
-    }
-
-    session.queue = channelMusicModel.queeue;
     playMusic(session);
+
+    player.on(AudioPlayerStatus.Idle, async () => {
+      session!.queue?.shift();
+
+      if (session!.queue?.length === 0) return session!.connection?.destroy();
+      playMusic(session);
+    });
   } catch (error) {
     console.error('Erro ao executar o comando:', error);
-    deleteAllByChannelId(voiceChannel.id);
+    delete musicSessions[voiceChannel.id];
     if (!interaction.replied) {
       await interaction.editReply('❌ Ocorreu um erro ao processar o comando.');
     }
@@ -132,12 +125,45 @@ async function validationUrlAndAddMusicToChannel(
     return false;
   }
 
-  const channel = await loadMusicByChannelId(voiceChannel.id);
+  // const infoUrl = await ytdl.getInfo(url);
 
-  await addMusicToQueeue(voiceChannel.id, url);
+  const session = musicSessions[voiceChannel.id];
 
-  if (channel && channel.queeue.length > 0) {
-    await interaction.reply('🎶 Adicionado a fila!');
+  if (!session) {
+    musicSessions[voiceChannel.id] = {
+      player: undefined,
+      connection: undefined,
+      queue: [
+        {
+          url,
+          createdAt: new Date(),
+          id: randomUUID(),
+          updatedAt: new Date(),
+          title: '',
+          artist: '',
+          album: null,
+          channelId: voiceChannel.id,
+        },
+      ],
+    };
+
+    await interaction.reply('🎶 TutsTuts!');
+    return true;
+  } else {
+    session.queue?.push({
+      url,
+      createdAt: new Date(),
+      id: randomUUID(),
+      updatedAt: new Date(),
+      title: '',
+      artist: '',
+      album: null,
+      channelId: voiceChannel.id,
+    });
+  }
+
+  if (session.player && session.connection && session.queue!.length > 0) {
+    await interaction.reply('🎶 Música adicionada à fila!');
     return false;
   } else {
     await interaction.reply('🎶 TutsTuts!');

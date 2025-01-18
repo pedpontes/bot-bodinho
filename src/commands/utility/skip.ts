@@ -30,18 +30,14 @@ async function execute(interaction: ChatInputCommandInteraction<CacheType>) {
 
   const session = musicSessions[voiceChannel.id];
 
-  if (!session) {
+  if (!session || !session.connection || !session.player) {
     await interaction.reply('❌ Não há músicas tocando neste canal!');
     return;
   }
-  await deleteMusicById(session!.queue[0].id);
 
-  const musicChannelModel = await loadMusicByChannelId(voiceChannel.id);
-  if (!musicChannelModel) return session!.connection.destroy();
+  session!.queue?.shift();
 
-  session!.queue = musicChannelModel.queeue || [];
-
-  if (session.queue.length === 0) {
+  if (!session.queue || session.queue?.length === 0) {
     session.connection.destroy();
     delete musicSessions[voiceChannel.id];
     await interaction.reply('🎶 Não há mais músicas na fila!');
