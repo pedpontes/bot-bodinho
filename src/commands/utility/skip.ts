@@ -6,8 +6,6 @@ import {
 } from 'discord.js';
 import { musicSessions } from '../../states/music-session';
 import { playMusic } from '../../use-cases/play-music';
-import deleteMusicById from '../../use-cases/delete-music-by-id';
-import loadMusicByChannelId from '../../use-cases/load-music-by-channel';
 
 module.exports = {
   data: new SlashCommandBuilder()

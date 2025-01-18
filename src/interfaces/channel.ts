@@ -1,4 +1,4 @@
-import { Music } from '@prisma/client';
+import { MusicModel } from './music';
 
 export interface ChannelModel {
   id: string;
@@ -7,5 +7,5 @@ export interface ChannelModel {
   createdAt: Date;
   updatedAt: Date;
   guildId: string;
-  queeue?: Music[];
+  queeue?: MusicModel[];
 }

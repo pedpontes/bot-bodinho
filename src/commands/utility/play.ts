@@ -1,5 +1,4 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { spawn, ChildProcessWithoutNullStreams } from 'child_process';
 import {
   ChatInputCommandInteraction,
   CacheType,
@@ -13,25 +12,10 @@ import {
   NoSubscriberBehavior,
 } from '@discordjs/voice';
 import ytdl from 'ytdl-core';
-import addMusicToQueeue from '../../use-cases/add-music-to-queeue';
-import loadMusicByChannelId from '../../use-cases/load-music-by-channel';
-import deleteMusicById from '../../use-cases/delete-music-by-id';
-import deleteAllByChannelId from '../../use-cases/delete-musics-by-channel-id';
 import { playMusic } from '../../use-cases/play-music';
 import { musicSessions } from '../../states/music-session';
-import { info } from 'console';
 import { randomUUID } from 'crypto';
-
-export type Queeue = {
-  url: string;
-  createdAt: Date;
-  id: string;
-  updatedAt: Date;
-  title: string | null;
-  artist: string | null;
-  album: string | null;
-  channelId: string;
-};
+import loadUrlScrappingHtml from '../../use-cases/load-url-scrapping-html';
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -48,11 +32,12 @@ module.exports = {
 };
 
 async function execute(interaction: ChatInputCommandInteraction<CacheType>) {
+  await interaction.deferReply();
   const member = interaction.member as GuildMember;
   const voiceChannel = member.voice.channel;
 
   if (!voiceChannel) {
-    await interaction.reply(
+    await interaction.followUp(
       '⚠️ Você precisa estar em um canal de voz para usar este comando!',
     );
     return;
@@ -95,7 +80,11 @@ async function execute(interaction: ChatInputCommandInteraction<CacheType>) {
     player.on(AudioPlayerStatus.Idle, async () => {
       session!.queue?.shift();
 
-      if (session!.queue?.length === 0) return session!.connection?.destroy();
+      if (session!.queue?.length === 0) {
+        session!.connection?.destroy();
+        delete musicSessions[voiceChannel.id];
+        return;
+      }
       playMusic(session);
     });
   } catch (error) {
@@ -111,21 +100,27 @@ async function validationUrlAndAddMusicToChannel(
   interaction: ChatInputCommandInteraction<CacheType>,
   voiceChannel: VoiceBasedChannel,
 ): Promise<boolean> {
-  const urlRaw = interaction.options.getString('url')?.trim();
+  let urlRaw = interaction.options.getString('url')?.trim();
 
   if (!urlRaw) {
-    await interaction.reply('❌ Você precisa informar um link para a música!');
+    await interaction.followUp(
+      '❌ Você precisa informar um link para a música!',
+    );
     return false;
+  }
+
+  if (!urlRaw.includes('https://www.youtube.com/watch?v=')) {
+    urlRaw = await loadUrlScrappingHtml(urlRaw);
   }
 
   const url = urlRaw.split('&')[0];
 
+  console.log(url);
+
   if (!ytdl.validateURL(url)) {
-    await interaction.reply('❌ URL inválida!');
+    await interaction.followUp('❌ URL inválida!');
     return false;
   }
-
-  // const infoUrl = await ytdl.getInfo(url);
 
   const session = musicSessions[voiceChannel.id];
 
@@ -147,7 +142,7 @@ async function validationUrlAndAddMusicToChannel(
       ],
     };
 
-    await interaction.reply('🎶 TutsTuts!');
+    await interaction.followUp('🎶 TutsTuts!');
     return true;
   } else {
     session.queue?.push({
@@ -161,12 +156,6 @@ async function validationUrlAndAddMusicToChannel(
       channelId: voiceChannel.id,
     });
   }
-
-  if (session.player && session.connection && session.queue!.length > 0) {
-    await interaction.reply('🎶 Música adicionada à fila!');
-    return false;
-  } else {
-    await interaction.reply('🎶 TutsTuts!');
-    return true;
-  }
+  await interaction.followUp('🎶 Música adicionada à fila!');
+  return false;
 }

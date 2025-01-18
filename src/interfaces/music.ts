@@ -1,10 +1,10 @@
 export interface MusicModel {
-  id: string;
-  title?: string;
-  artist?: string;
-  album?: string;
   url: string;
   createdAt: Date;
+  id: string;
   updatedAt: Date;
-  chanelId?: string;
+  title: string | null;
+  artist: string | null;
+  album: string | null;
+  channelId: string;
 }

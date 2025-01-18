@@ -1,7 +1,6 @@
 import { SlashCommandBuilder, GuildMember } from 'discord.js';
 import { ChatInputCommandInteraction, CacheType } from 'discord.js';
 import { getVoiceConnection } from '@discordjs/voice';
-import deleteAllByChannelId from '../../use-cases/delete-musics-by-channel-id';
 import { musicSessions } from '../../states/music-session';
 
 module.exports = {
