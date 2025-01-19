@@ -1,6 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import client from './main';
-import { MusicModel } from '../interfaces/music';
+import client from '../services/prisma';
 
 export class MusicRepository {
   private readonly client: PrismaClient;

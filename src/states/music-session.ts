@@ -1,5 +1,5 @@
 import { AudioPlayer, VoiceConnection } from '@discordjs/voice';
-import { MusicModel } from '../interfaces/music';
+import { MusicModel } from '../domain/interfaces/music';
 
 export type MusicSession = {
   player?: AudioPlayer;

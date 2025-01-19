@@ -5,7 +5,7 @@ import {
   GuildMember,
 } from 'discord.js';
 import { musicSessions } from '../../states/music-session';
-import { playMusic } from '../../use-cases/play-music';
+import { PlayMusicUseCase } from '../../modules/play/use-case/play-music';
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -40,7 +40,7 @@ async function execute(interaction: ChatInputCommandInteraction<CacheType>) {
     delete musicSessions[voiceChannel.id];
     await interaction.reply('🎶 Não há mais músicas na fila!');
   } else {
-    playMusic(session);
+    new PlayMusicUseCase().play(session);
     await interaction.reply('⏭️ Música pulada!');
   }
 }

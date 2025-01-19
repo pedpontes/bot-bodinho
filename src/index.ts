@@ -11,31 +11,21 @@ const client = new Client({
 client.commands = new Collection();
 
 (() => {
-  const foldersPath = path.join(__dirname, 'commands');
-  const commandFolders = fs.readdirSync(foldersPath);
+  const commandsPath = path.join(__dirname, 'main/commands');
 
-  for (const folder of commandFolders) {
-    const commandsPath = path.join(foldersPath, folder);
-    const commandFiles = fs.readdirSync(commandsPath).filter((file) => {
-      if (file.endsWith('.js')) {
-        return true;
-      } else if (file.endsWith('.ts')) {
-        return true;
-      } else {
-        return false;
-      }
-    });
+  const commandFiles = fs
+    .readdirSync(commandsPath)
+    .filter((file) => file.endsWith('.js'));
 
-    for (const file of commandFiles) {
-      const filePath = path.join(commandsPath, file);
-      const command = require(filePath);
-      if ('data' in command && 'execute' in command) {
-        client.commands.set(command.data.name, command);
-      } else {
-        console.log(
-          `[AVISO] O comando em ${filePath} esta faltando "data" ou "execute" propriedade.`,
-        );
-      }
+  for (const file of commandFiles) {
+    const filePath = path.join(commandsPath, file);
+    const command = require(filePath);
+    if ('data' in command && 'execute' in command) {
+      client.commands.set(command.data.name, command);
+    } else {
+      console.log(
+        `[AVISO] O comando em ${filePath} esta faltando "data" ou "execute" propriedade.`,
+      );
     }
   }
   deploy(client);
