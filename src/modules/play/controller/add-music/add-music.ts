@@ -11,6 +11,7 @@ import {
   joinVoiceChannel,
   AudioPlayerStatus,
   NoSubscriberBehavior,
+  EmbedBuilder,
 } from './add-music-protocols';
 
 export class AddMusicController implements Controller {
@@ -55,10 +56,25 @@ export class AddMusicController implements Controller {
       );
 
       if (!isFirstMusic) {
-        await interaction.followUp('🎶 Música adicionada à fila!');
+        const embed = new EmbedBuilder()
+          .setTitle('🎵 Adicionado à fila')
+          .setDescription(`${url}`)
+          .setColor(0x1db954)
+          .setFooter({ text: 'Jajá irei tocar sua música!' })
+          .setTimestamp();
+
+        await interaction.followUp({ embeds: [embed] });
         return;
       }
-      await interaction.followUp('🎶 Música tocando! \n' + url);
+
+      const embed = new EmbedBuilder()
+        .setTitle('🎵 Tocando agora')
+        .setDescription(`${url}`)
+        .setColor(0x1db954)
+        .setFooter({ text: 'Aproveite a música!' })
+        .setTimestamp();
+
+      await interaction.followUp({ embeds: [embed] });
 
       let session = musicSessions[voiceChannel.id];
 
