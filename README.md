@@ -1,6 +1,6 @@
 ## Bot Bodinho.
 
-Pegue o token e o clientId do seu bot e coloque em .env, exemplo em .env.example
+Insira o `token` e `clientId` do seu bot em .env, exemplo em `.env.example`.
 
 Comandos:
  - `/play`: Tocar música com URL ou nome do youtube.
