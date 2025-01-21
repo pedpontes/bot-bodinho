@@ -44,6 +44,7 @@ client.on(Events.InteractionCreate, async (interation) => {
   try {
     await command.execute(interation);
   } catch (error) {
+    console.error(error);
     if (interation.replied || interation.deferred) {
       await interation.followUp({
         content: 'Erro ao executar este comando!',

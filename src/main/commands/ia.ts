@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from 'discord.js';
 import { ChatInputCommandInteraction, CacheType } from 'discord.js';
-import OpenAi from 'openai';
+import { openai } from '../../services/openai';
 import dev from '../../config';
 
 module.exports = {
@@ -20,10 +20,6 @@ module.exports = {
         '❌ Você precisa de uma chave de API OpenAI para usar este comando!',
       );
     }
-
-    const openai = new OpenAi({
-      apiKey: dev.openaiApiKey,
-    });
 
     const input = interation.options.getString('input') as string;
 

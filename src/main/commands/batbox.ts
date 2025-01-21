@@ -13,7 +13,7 @@ import {
   VoiceConnectionStatus,
   AudioPlayerStatus,
 } from '@discordjs/voice';
-import fetch from 'node-fetch';
+import axios from 'axios';
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -64,12 +64,12 @@ module.exports = {
       const fileName = `audio_${Date.now()}_${attachment.name}`;
       const filePath = path.join(musicDir, fileName);
 
-      const response = await fetch(attachment.url);
-      if (!response.ok) {
+      const response = (await axios.get(attachment.url)).data;
+      if (!response) {
         throw new Error('Erro ao baixar o arquivo de áudio.');
       }
 
-      const audioStream = response.body;
+      const audioStream = response;
       const writeStream = fs.createWriteStream(filePath);
 
       await new Promise((resolve, reject) => {
