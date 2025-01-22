@@ -33,7 +33,9 @@ async function execute(interaction: ChatInputCommandInteraction<CacheType>) {
     return;
   }
 
-  session!.queue?.shift();
+  if (session.queue && session.queue?.length > 0) {
+    session!.queue?.shift();
+  }
 
   if (!session.queue || session.queue?.length === 0) {
     session.connection.destroy();

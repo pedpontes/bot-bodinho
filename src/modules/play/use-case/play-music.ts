@@ -2,11 +2,14 @@ import { spawn } from 'child_process';
 import { MusicSession } from '../../../states/music-session';
 import { createAudioResource } from '@discordjs/voice';
 import { PlayMusic } from '../../../domain/use-cases/play/play-music';
+import dev from '../../../config';
 
 export class PlayMusicUseCase implements PlayMusic {
+  private readonly dev: boolean = dev.ytDlpPath.split(' ').length > 1;
   constructor() {}
 
   async play(session: MusicSession): Promise<void> {
+    const ytdlPath = dev.ytDlpPath.split(' ');
     if (
       session!.queue?.length === 0 ||
       !session.queue ||
@@ -17,9 +20,9 @@ export class PlayMusicUseCase implements PlayMusic {
       return;
     }
 
-    const { stdout } = spawn('python3', [
-      '-m',
-      'yt_dlp',
+    const { stdout } = spawn(ytdlPath[0], [
+      dev && '-m',
+      dev && 'yt_dlp',
       '-q',
       '-x',
       '--audio-format',

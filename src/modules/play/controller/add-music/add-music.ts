@@ -56,25 +56,11 @@ export class AddMusicController implements Controller {
       );
 
       if (!isFirstMusic) {
-        const embed = new EmbedBuilder()
-          .setTitle('🎵 Adicionado à fila')
-          .setDescription(`${url}`)
-          .setColor(0x1db954)
-          .setFooter({ text: 'Jajá irei tocar sua música!' })
-          .setTimestamp();
-
-        await interaction.followUp({ embeds: [embed] });
+        await interaction.followUp('🎵 Adicionado à fila! \n Link: ' + url);
         return;
       }
 
-      const embed = new EmbedBuilder()
-        .setTitle('🎵 Tocando agora')
-        .setDescription(`${url}`)
-        .setColor(0x1db954)
-        .setFooter({ text: 'Aproveite a música!' })
-        .setTimestamp();
-
-      await interaction.followUp({ embeds: [embed] });
+      await interaction.followUp('🎵 Tocando agora! \n Link: ' + url);
 
       let session = musicSessions[voiceChannel.id];
 
