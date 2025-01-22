@@ -36,7 +36,7 @@ export class PlayMusicUseCase implements PlayMusic {
   }
 
   private spawn(url: string): ChildProcessWithoutNullStreams {
-    if(this.isDev){
+    if(!this.isDev){
       return spawn('yt-dlp', [
         '--cookies',
         'cookies.txt',
