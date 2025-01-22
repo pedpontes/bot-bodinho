@@ -1,4 +1,4 @@
-import { spawn, ChildProcessWithoutNullStreams } from 'child_process';
+import { spawn, exec, ChildProcessWithoutNullStreams } from 'child_process';
 import { MusicSession } from '../../../states/music-session';
 import { createAudioResource } from '@discordjs/voice';
 import { PlayMusic } from '../../../domain/use-cases/play/play-music';
@@ -42,19 +42,15 @@ export class PlayMusicUseCase implements PlayMusic {
 
     if(!this.isDev){
       return spawn('yt-dlp', [
-        '--username',
-        dev.ytl.email || '',
-        '--password',
-        dev.ytl.pass || '',
         '-f',
         '139',
         '--cookies',
-        'cookies.txt',
+        '~/bot-bodinho/cookies.txt',
         '-q',
         '-o',
         '-',
         url,
-      ], { cwd: '~/bot-bodinho/' });
+      ]);
     }
     else {
       return spawn('python3', [
@@ -73,6 +69,22 @@ export class PlayMusicUseCase implements PlayMusic {
         '-',
         url,
       ], { cwd: '~/bot-bodinho/' });
+    }
+  }
+  private exec(url: string) {
+    if(dev.ytl.email === '' || dev.ytl.pass === ''){
+      console.log('[WARN] Email ou senha do YouTube não configurados');
+    }
+
+    if(!this.isDev){
+      return exec('yt-dlp --username ' + dev.ytl.email + ' --password ' + dev.ytl.pass + ' -f 139 --cookies cookies.txt -q -o - ' + url, { cwd: '~/bot-bodinho/' }, (_, stdout, stderr) => {
+        return { stdout, stderr };
+      });
+    }
+    else{
+      return exec('python3 -m yt_dlp --username ' + dev.ytl.email + ' --password ' + dev.ytl.pass + ' -f 139 --cookies cookies.txt -q -o - ' + url, { cwd: '~/bot-bodinho/' }, (_, stdout, stderr) => {
+        return { stdout, stderr };
+      });
     }
   }
 }
