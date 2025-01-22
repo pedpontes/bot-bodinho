@@ -21,8 +21,5 @@ jobs:
           password: ${{ secrets.HOME_SERVER_PASSWORD }}
           port: ${{ secrets.HOME_SERVER_PORT }}
           script: |
-            cd ~/bot-bodinho/
+            cd ~/bot-bodinho/ &&
             git pull origin main
-            yarnpkg
-            echo "Deploy concluído com sucesso!"
-            nohup yarnpkg start &
