@@ -31,4 +31,4 @@ jobs:
         run: echo "Deploy concluído com sucesso!"
 
       - name: Start application in background
-        run: nohup yarnpkg start &
+        run: yarnpkg start &
