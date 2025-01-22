@@ -8,6 +8,7 @@ export class PuppeteerHelper {
   async getBrowser() {
     if (!browser) {
       browser = await puppeteer.launch({
+        executablePath: '/usr/bin/chromium-browser',
         headless: true,
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
       });
