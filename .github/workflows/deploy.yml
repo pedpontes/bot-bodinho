@@ -25,4 +25,4 @@ jobs:
             git pull origin main
             yarnpkg
             echo "Deploy concluído com sucesso!"
-            yarnpkg start &
+            nohup yarnpkg start &
