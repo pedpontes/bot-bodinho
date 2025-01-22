@@ -27,6 +27,10 @@ if (
 }
 
 export default {
+  ytl: {
+    email: process.env.EMAIL,
+    pass: process.env.PASSWORD,
+  },
   token: process.env.TOKEN,
   clientId: process.env.CLIENT_ID,
   openaiApiKey: process.env.OPENAI_API_KEY,

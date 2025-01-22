@@ -36,14 +36,21 @@ export class PlayMusicUseCase implements PlayMusic {
   }
 
   private spawn(url: string): ChildProcessWithoutNullStreams {
+    if(dev.ytl.email === '' || dev.ytl.pass === ''){
+      console.log('[WARN] Email ou senha do YouTube não configurados');
+    }
+
     if(!this.isDev){
       return spawn('yt-dlp', [
+        '--username',
+        dev.ytl.email || '',
+        '--password',
+        dev.ytl.pass || '',
+        '-f',
+        '139',
         '--cookies',
         'cookies.txt',
         '-q',
-        '-x',
-        '--audio-format',
-        'mp3',
         '-o',
         '-',
         url,
@@ -53,12 +60,15 @@ export class PlayMusicUseCase implements PlayMusic {
       return spawn('python3', [
         '-m',
         'yt_dlp',
+        '--username',
+        dev.ytl.email || '',
+        '--password',
+        dev.ytl.pass || '',
+        '-f',
+        '139',
         '--cookies',
         'cookies.txt',
         '-q',
-        '-x',
-        '--audio-format',
-        'mp3',
         '-o',
         '-',
         url,
