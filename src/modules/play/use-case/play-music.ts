@@ -42,11 +42,10 @@ export class PlayMusicUseCase implements PlayMusic {
 
     if(!this.isDev){
       return spawn('yt-dlp', [
-        '-f',
-        '139',
         '--cookies',
         '~/bot-bodinho/cookies.txt',
         '-q',
+        '-x',
         '-o',
         '-',
         url,
