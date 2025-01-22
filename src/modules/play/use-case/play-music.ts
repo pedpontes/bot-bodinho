@@ -47,7 +47,7 @@ export class PlayMusicUseCase implements PlayMusic {
         '-o',
         '-',
         url,
-      ]);
+      ], { cwd: '~/bot-bodinho/' });
     }
     else {
       return spawn('python3', [
@@ -62,7 +62,7 @@ export class PlayMusicUseCase implements PlayMusic {
         '-o',
         '-',
         url,
-      ]);
+      ], { cwd: '~/bot-bodinho/' });
     }
   }
 }
