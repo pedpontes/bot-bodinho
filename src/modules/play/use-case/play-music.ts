@@ -20,9 +20,7 @@ export class PlayMusicUseCase implements PlayMusic {
       return;
     }
 
-    const { stdout } = spawn(ytdlPath[0], [
-      dev && '-m',
-      dev && 'yt_dlp',
+    const { stdout } = spawn('yt_dlp', [
       '-x',
       '--audio-format',
       'mp3',
