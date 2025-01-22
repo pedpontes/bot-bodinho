@@ -23,5 +23,12 @@ jobs:
           script: |
             cd ~/bot-bodinho/
             git pull origin main
-            yarnpkg
-            yarnpkg start
+
+      - name: Install dependencies
+        run: yarnpkg
+
+      - name: Deploy feedback
+        run: echo "Deploy concluído com sucesso!"
+
+      - name: Start application in background
+        run: nohup yarn start &
