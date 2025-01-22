@@ -16,9 +16,14 @@ jobs:
       - name: Deploy to Home Server
         uses: appleboy/ssh-action@v0.1.5
         with:
+          host: ${{ secrets.HOME_SERVER_HOST }}
+          username: ${{ secrets.HOME_SERVER_USER }}
+          password: ${{ secrets.HOME_SERVER_PASSWORD }}
+          port: ${{ secrets.HOME_SERVER_PORT }}
           script: |
-          ssh -o StrictHostKeyChecking=no -p ${{ secrets.HOME_SERVER_PORT }} ${{ secrets.HOME_SERVER_USER }}@${{ secrets.HOME_SERVER_HOST }} << 'EOF'
-            cd ~/bot-bodinho/
-            git pull origin main
-            yarnpkg
-            yarnpkg start
+            ssh -o StrictHostKeyChecking=no -p ${{ secrets.HOME_SERVER_PORT }} ${{ secrets.HOME_SERVER_USER }}@${{ secrets.HOME_SERVER_HOST }} << 'EOF'
+              cd ~/bot-bodinho/
+              git pull origin main
+              yarnpkg
+              yarnpkg start
+            EOF
