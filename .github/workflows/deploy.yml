@@ -16,12 +16,12 @@ jobs:
       - name: Deploy to Home Server
         uses: appleboy/ssh-action@v0.1.5
         with:
-          host: ${{ secrets.HOME_SERVER_HOST }}
-          username: ${{ secrets.HOME_SERVER_USER }}
-          password: ${{ secrets.HOME_SERVER_PASSWORD }}
-          port: ${{ secrets.HOME_SERVER_PORT }}
+          host: ${{ secrets.HOME_SERVER_HOST }} # IP ou nome do servidor
+          username: ${{ secrets.HOME_SERVER_USER }} # Nome de usuário
+          password: ${{ secrets.HOME_SERVER_PASSWORD }} # Senha do usuário
+          port: ${{ secrets.HOME_SERVER_PORT }} # Porta SSH, normalmente 22
           script: |
-            cd /caminho/do/projeto
+            cd ~/bot-bodinho/
             git pull origin main
-            yarn build
-            yarn start
+            yarnpkg
+            yarnpkg start
