@@ -5,7 +5,6 @@ import { PlayMusic } from '../../../domain/use-cases/play/play-music';
 import dev from '../../../config';
 
 export class PlayMusicUseCase implements PlayMusic {
-  private readonly dev: boolean = dev.ytDlpPath.split(' ').length > 1;
   constructor() {}
 
   async play(session: MusicSession): Promise<void> {
@@ -20,14 +19,22 @@ export class PlayMusicUseCase implements PlayMusic {
       return;
     }
 
-    const { stdout } = spawn('yt-dlp', [
-      '-x',
-      '--audio-format',
-      'mp3',
-      '-o',
-      '-',
+    const commands = [...ytdlPath, '-q', '-x', '--audio-format', 'mp3', '-o', '-'].filter((x) => x !== '' || x).shift(); 
+
+    if(!commands) throw new Error('Invalid yt-dlp path');
+
+    console.log('Commands:', commands);
+
+    const { stdout, stderr } = spawn(ytdlPath[0], [
+      ...commands,
       session.queue[0].url,
     ]);
+
+    stderr.on('data', (data) => {
+      console.log('Error:', data.toString());
+    });
+
+    console.log('Playing music', stdout);
 
     const resource = createAudioResource(stdout);
     session.player.play(resource);
