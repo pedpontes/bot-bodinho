@@ -87,9 +87,12 @@ export class AddMusicController implements Controller {
       player.on(AudioPlayerStatus.Idle, async () => {
         session = musicSessions[voiceChannel.id];
 
+
+        if(!session) return;
+
         session.queue?.shift();
 
-        if (session!.queue?.length === 0) {
+        if (!session.queue || session!.queue?.length === 0) {
           session!.connection?.destroy();
           delete musicSessions[voiceChannel.id];
           return;
