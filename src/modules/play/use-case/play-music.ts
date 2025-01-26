@@ -5,13 +5,9 @@ import { PlayMusic } from '../../../domain/use-cases/play/play-music';
 import dev from '../../../config';
 
 export class PlayMusicUseCase implements PlayMusic {
-  private readonly isDev: boolean;
-  constructor() {
-    this.isDev = dev.ytDlpPath.split(' ').length > 1;
-  }
+  constructor() {}
 
   async play(session: MusicSession): Promise<void> {
-    const ytdlPath = dev.ytDlpPath.split(' ');
     if (
       session!.queue?.length === 0 ||
       !session.queue ||
@@ -40,50 +36,12 @@ export class PlayMusicUseCase implements PlayMusic {
       console.log('[WARN] Email ou senha do YouTube não configurados');
     }
 
-    if(!this.isDev){
-      return spawn('yt-dlp', [
-        '--cookies',
-        '~/bot-bodinho/cookies.txt',
-        '-q',
-        '-x',
-        '-o',
-        '-',
-        url,
-      ]);
-    }
-    else {
-      return spawn('python3', [
-        '-m',
-        'yt_dlp',
-        '--username',
-        dev.ytl.email || '',
-        '--password',
-        dev.ytl.pass || '',
-        '-f',
-        '139',
-        '--cookies',
-        'cookies.txt',
-        '-q',
-        '-o',
-        '-',
-        url,
-      ], { cwd: '~/bot-bodinho/' });
-    }
-  }
-  private exec(url: string) {
-    if(dev.ytl.email === '' || dev.ytl.pass === ''){
-      console.log('[WARN] Email ou senha do YouTube não configurados');
-    }
-
-    if(!this.isDev){
-      return exec('yt-dlp --username ' + dev.ytl.email + ' --password ' + dev.ytl.pass + ' -f 139 --cookies cookies.txt -q -o - ' + url, { cwd: '~/bot-bodinho/' }, (_, stdout, stderr) => {
-        return { stdout, stderr };
-      });
-    }
-    else{
-      return exec('python3 -m yt_dlp --username ' + dev.ytl.email + ' --password ' + dev.ytl.pass + ' -f 139 --cookies cookies.txt -q -o - ' + url, { cwd: '~/bot-bodinho/' }, (_, stdout, stderr) => {
-        return { stdout, stderr };
-      });
-    }
+    return spawn('yt-dlp', [
+      '-x',
+      '-q',
+      '-o',
+      '-',
+      url,
+    ]);
   }
 }
