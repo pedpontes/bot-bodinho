@@ -21,10 +21,8 @@ export class PlayMusicUseCase implements PlayMusic {
     const { stdout, stderr } = this.spawn(session.queue[0].url);
 
     stderr.on('data', (data) => {
-      console.log('Error:', data.toString());
+      console.log(data.toString());
     });
-
-    console.log('Playing music', stdout);
 
     const resource = createAudioResource(stdout);
     session.player.play(resource);
@@ -32,9 +30,6 @@ export class PlayMusicUseCase implements PlayMusic {
   }
 
   private spawn(url: string): ChildProcessWithoutNullStreams {
-    if(dev.ytl.email === '' || dev.ytl.pass === ''){
-      console.log('[WARN] Email ou senha do YouTube não configurados');
-    }
 
     return spawn('yt-dlp', [
       '-x',
