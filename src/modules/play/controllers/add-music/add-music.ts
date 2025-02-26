@@ -46,9 +46,7 @@ export class AddMusicController implements Controller {
         return;
       }
 
-      const url = (await this.validationUrlUseCase.validate(input)).split(
-        '&',
-      )[0];
+      const url = (await this.validationUrlUseCase.validate(input))
 
       const isFirstMusic = await this.addMusicToSessionUseCase.add(
         voiceChannel,

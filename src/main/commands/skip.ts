@@ -5,7 +5,7 @@ import {
   GuildMember,
 } from 'discord.js';
 import { musicSessions } from '../../states/music-session';
-import { PlayMusicUseCase } from '../../modules/play/use-case/play-music';
+import { PlayMusicUseCase } from '../../modules/play/use-cases/play-music';
 
 module.exports = {
   data: new SlashCommandBuilder()
