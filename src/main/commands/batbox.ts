@@ -43,11 +43,6 @@ module.exports = {
         return;
       }
 
-      const musicDir = path.resolve('music');
-      if (!fs.existsSync(musicDir)) {
-        fs.mkdirSync(musicDir);
-      }
-
       const data = interaction.options.data[0];
       const attachment = data.attachment;
 
@@ -61,25 +56,15 @@ module.exports = {
         return;
       }
 
-      const fileName = `audio_${Date.now()}_${attachment.name}`;
-      const filePath = path.join(musicDir, fileName);
+      const response = (
+        await axios.get(attachment.url, {
+          responseType: 'arraybuffer',
+        })
+      ).data;
 
-      const response = (await axios.get(attachment.url)).data;
       if (!response) {
         throw new Error('Erro ao baixar o arquivo de áudio.');
       }
-
-      const audioStream = response;
-      const writeStream = fs.createWriteStream(filePath);
-
-      await new Promise((resolve, reject) => {
-        audioStream?.pipe(writeStream);
-        audioStream?.on('error', reject);
-        writeStream.on('finish', resolve);
-        writeStream.on('error', reject);
-      });
-
-      await interaction.followUp('✅ Arquivo de áudio salvo com sucesso!');
 
       const connection = joinVoiceChannel({
         channelId: voiceChannel.id,
@@ -87,7 +72,7 @@ module.exports = {
         adapterCreator: voiceChannel.guild.voiceAdapterCreator,
       });
 
-      const resource = createAudioResource(fs.createReadStream(filePath));
+      const resource = createAudioResource(fs.createReadStream(response));
       const player = createAudioPlayer();
 
       player.play(resource);
