@@ -1,5 +1,9 @@
-import { SlashCommandBuilder } from 'discord.js';
-import { ChatInputCommandInteraction, CacheType } from 'discord.js';
+import {
+  SlashCommandBuilder,
+  ChatInputCommandInteraction,
+  CacheType,
+  EmbedBuilder,
+} from 'discord.js';
 import { openai } from '../../services/openai';
 import dev from '../../config';
 
@@ -40,11 +44,19 @@ module.exports = {
       response_format: 'url',
     });
 
-    const replyContent = response.data.map((data) => data.url).join('\n');
+    const replyContent = response.data[0].url;
     if (replyContent) {
-      await interation.editReply(
-        'Prompt: ' + input + '\n\n' + replyContent
-      );
+      const embed = new EmbedBuilder()
+        .setTitle('🎨 Imagem Gerada pela IA')
+        .setDescription(`✨ **Prompt usado:**\n\`${input}\``)
+        .setColor('#1E90FF')
+        .setImage(replyContent)
+        .setFooter({
+          text: 'Gerado com IA',
+          iconURL: interation.user.displayAvatarURL(),
+        });
+
+      await interation.editReply({ embeds: [embed] });
     } else {
       await interation.editReply('❌ A resposta da IA está vazia.');
     }
