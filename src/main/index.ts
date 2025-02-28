@@ -1,7 +1,7 @@
+import { Client, Collection, Events, GatewayIntentBits } from 'discord.js';
 import fs from 'node:fs';
 import path from 'node:path';
-import { Client, Collection, GatewayIntentBits, Events } from 'discord.js';
-import dev from './config';
+import dev from './configs/config';
 import { deploy } from './deploy-commands';
 
 const client = new Client({

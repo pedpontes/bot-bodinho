@@ -1,8 +1,8 @@
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 
-import env from './config';
 import { Client } from 'discord.js';
+import env from './configs/config';
 
 export async function deploy(client: Client) {
   try {

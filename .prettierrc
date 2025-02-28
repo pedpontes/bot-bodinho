@@ -3,7 +3,18 @@
   "singleQuote": true,
   "tabWidth": 2,
   "useTabs": false,
-  "trailingComma": "all",
-  "arrowParens": "always",
-  "bracketSpacing": true
+  "endOfLine": "auto",
+  "importOrder": [
+    "@/domain/(.*)$",
+    "@/infra/(.*)$",
+    "@/main/(.*)$",
+    "@/modules/(.*)$",
+    "@/presentation/(.*)$",
+    "@/services/(.*)$",
+    "@/utils/(.*)$",
+    "@/mocks/(.*)$",
+    "^[./]"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
 }

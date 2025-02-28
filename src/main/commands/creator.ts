@@ -1,11 +1,11 @@
 import {
-  SlashCommandBuilder,
-  ChatInputCommandInteraction,
   CacheType,
+  ChatInputCommandInteraction,
   EmbedBuilder,
+  SlashCommandBuilder,
 } from 'discord.js';
 import { openai } from '../../services/openai';
-import dev from '../../config';
+import dev from '../configs/config';
 
 module.exports = {
   data: new SlashCommandBuilder()
