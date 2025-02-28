@@ -1,4 +1,4 @@
-import { MusicSession } from '@/states/music-session';
+import { addMusicToSessionObserver } from '@/main/observers/add-music';
 import { createAudioResource } from '@discordjs/voice';
 import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
 import { PlayMusic } from '../controllers/add-music/add-music-protocols';
@@ -6,15 +6,20 @@ import { PlayMusic } from '../controllers/add-music/add-music-protocols';
 export class PlayMusicUseCase implements PlayMusic {
   constructor() {}
 
-  async play(session: MusicSession): Promise<void> {
+  async play(channelId: string): Promise<void> {
+    const session = addMusicToSessionObserver();
+
     if (
-      session!.queue?.length === 0 ||
+      session[channelId]!.queue?.length === 0 ||
       !session.queue ||
       !session.connection ||
       !session.player
     ) {
-      session.connection?.destroy();
+      session[channelId].connection?.destroy();
       return;
+    }
+
+    if (!session.player) {
     }
 
     const { stdout, stderr } = this.spawn(session.queue[0].url);

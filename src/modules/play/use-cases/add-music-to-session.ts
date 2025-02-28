@@ -1,4 +1,5 @@
 import { MusicDetails } from '@/domain/interfaces/music';
+import { addMusicToSessionObserver } from '@/main/observers/add-music';
 import { musicSessions } from '@/states/music-session';
 import { randomUUID } from 'crypto';
 import { VoiceBasedChannel } from 'discord.js';
@@ -9,8 +10,8 @@ export class AddMusicToSessionUseCase implements AddMusicToSession {
   async add(
     voiceChannel: VoiceBasedChannel,
     musics: MusicDetails[],
-  ): Promise<boolean> {
-    const session = musicSessions[voiceChannel.id];
+  ): Promise<void> {
+    const session = addMusicToSessionObserver()[voiceChannel.id];
 
     if (!session || !session.queue) {
       musicSessions[voiceChannel.id] = {
@@ -27,7 +28,6 @@ export class AddMusicToSessionUseCase implements AddMusicToSession {
           };
         }),
       };
-      return true; // first music
     } else {
       session.queue.push(
         ...musics.map((music) => {
@@ -44,6 +44,5 @@ export class AddMusicToSessionUseCase implements AddMusicToSession {
         }),
       );
     }
-    return false; //queeued music
   }
 }
