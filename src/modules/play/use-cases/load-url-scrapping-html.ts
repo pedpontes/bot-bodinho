@@ -27,7 +27,7 @@ export class LoadUrlScrappingHtmlUseCase implements LoadUrlScrappingHtml {
       return `https://www.youtube.com${link}`;
     } catch (error) {
       console.error(error);
-      throw new Error('Erro ao processar a música!');
+      throw new Error('Erro ao buscar a música!');
     }
   }
 }

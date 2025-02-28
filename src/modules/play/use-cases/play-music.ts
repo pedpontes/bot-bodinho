@@ -1,8 +1,7 @@
-import { spawn, exec, ChildProcessWithoutNullStreams } from 'child_process';
+import { spawn, ChildProcessWithoutNullStreams } from 'child_process';
 import { MusicSession } from '../../../states/music-session';
 import { createAudioResource } from '@discordjs/voice';
 import { PlayMusic } from '../../../domain/use-cases/play/play-music';
-import dev from '../../../config';
 
 export class PlayMusicUseCase implements PlayMusic {
   constructor() {}
@@ -30,13 +29,6 @@ export class PlayMusicUseCase implements PlayMusic {
   }
 
   private spawn(url: string): ChildProcessWithoutNullStreams {
-
-    return spawn('yt-dlp', [
-      '-x',
-      '-q',
-      '-o',
-      '-',
-      url,
-    ]);
+    return spawn('yt-dlp', ['-x', '-q', '-o', '-', url]);
   }
 }

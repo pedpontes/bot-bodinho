@@ -1,17 +1,17 @@
 import {
-  Controller,
-  ChatInputCommandInteraction,
-  CacheType,
-  ValidationUrl,
   AddMusicToSession,
-  PlayMusic,
-  GuildMember,
-  musicSessions,
-  createAudioPlayer,
-  joinVoiceChannel,
   AudioPlayerStatus,
+  CacheType,
+  ChatInputCommandInteraction,
+  Controller,
+  createAudioPlayer,
+  GuildMember,
+  joinVoiceChannel,
+  LoadDetailsMusicsByUrl,
+  musicSessions,
   NoSubscriberBehavior,
-  EmbedBuilder,
+  PlayMusic,
+  ValidationUrl,
 } from './add-music-protocols';
 
 export class AddMusicController implements Controller {
@@ -19,6 +19,7 @@ export class AddMusicController implements Controller {
     private readonly validationUrlUseCase: ValidationUrl,
     private readonly addMusicToSessionUseCase: AddMusicToSession,
     private readonly playMusicUseCase: PlayMusic,
+    private readonly loadDetailsMusicsByUrlUseCase: LoadDetailsMusicsByUrl,
   ) {}
 
   async handle(
@@ -46,11 +47,13 @@ export class AddMusicController implements Controller {
         return;
       }
 
-      const url = (await this.validationUrlUseCase.validate(input))
+      const url = await this.validationUrlUseCase.validate(input);
+
+      const musicsModel = await this.loadDetailsMusicsByUrlUseCase.load(url);
 
       const isFirstMusic = await this.addMusicToSessionUseCase.add(
         voiceChannel,
-        url,
+        musicsModel,
       );
 
       if (!isFirstMusic) {
@@ -61,6 +64,8 @@ export class AddMusicController implements Controller {
       await interaction.followUp('🎵 Tocando agora! \n Link: ' + url);
 
       let session = musicSessions[voiceChannel.id];
+
+      if (!session) throw new Error('Sessão não encontrada');
 
       const player = createAudioPlayer({
         behaviors: {
@@ -85,15 +90,18 @@ export class AddMusicController implements Controller {
       player.on(AudioPlayerStatus.Idle, async () => {
         session = musicSessions[voiceChannel.id];
 
-
-        if(!session) return;
+        if (!session) return;
 
         session.queue?.shift();
 
-        if (!session.queue || session!.queue?.length === 0) {
-          session!.connection?.destroy();
-          delete musicSessions[voiceChannel.id];
-          return;
+        if (!session.queue || !session.queue.length) {
+          setTimeout(() => {
+            const sessionCurrent = musicSessions[voiceChannel.id];
+            if (!sessionCurrent.queue || !sessionCurrent.queue.length)
+              session.connection?.destroy();
+            delete musicSessions[voiceChannel.id];
+            return;
+          }, 10000);
         }
         await this.playMusicUseCase.play(session);
       });

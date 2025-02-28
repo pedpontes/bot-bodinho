@@ -8,3 +8,8 @@ export interface MusicModel {
   album: string | null;
   channelId: string;
 }
+
+export type MusicDetails = {
+  url: string;
+  title: string;
+};

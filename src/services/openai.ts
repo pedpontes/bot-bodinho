@@ -1,6 +1,6 @@
 import OpenAi from 'openai';
-import dev from '../config';
+import dev from '../main/configs/config';
 
 export const openai = new OpenAi({
-      apiKey: dev.openaiApiKey,
-    });
+  apiKey: dev.openaiApiKey,
+});
