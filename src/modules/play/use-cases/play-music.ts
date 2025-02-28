@@ -10,12 +10,12 @@ export class PlayMusicUseCase implements PlayMusic {
     const session = addMusicToSessionObserver();
 
     if (
-      session!.queue?.length === 0 ||
+      session[channelId]!.queue?.length === 0 ||
       !session.queue ||
       !session.connection ||
       !session.player
     ) {
-      session.connection?.destroy();
+      session[channelId].connection?.destroy();
       return;
     }
 

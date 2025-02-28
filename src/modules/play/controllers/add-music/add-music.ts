@@ -1,14 +1,10 @@
 import {
   AddMusicToSession,
-  AudioPlayerStatus,
   CacheType,
   ChatInputCommandInteraction,
   Controller,
-  createAudioPlayer,
   GuildMember,
   LoadDetailsMusicsByUrl,
-  musicSessions,
-  NoSubscriberBehavior,
   PlayMusic,
   ValidationUrl,
 } from './add-music-protocols';
@@ -51,31 +47,6 @@ export class AddMusicController implements Controller {
       await this.loadDetailsMusicsByUrlUseCase.load(url, voiceChannel);
 
       // await this.addMusicToSessionUseCase.add(voiceChannel, musicsModel);
-
-      const player = createAudioPlayer({
-        behaviors: {
-          noSubscriber: NoSubscriberBehavior.Play,
-        },
-      });
-
-      player.on(AudioPlayerStatus.Idle, async () => {
-        session = musicSessions[voiceChannel.id];
-
-        if (!session) return;
-
-        session.queue?.shift();
-
-        if (!session.queue || !session.queue.length) {
-          setTimeout(() => {
-            const sessionCurrent = musicSessions[voiceChannel.id];
-            if (!sessionCurrent.queue || !sessionCurrent.queue.length)
-              session.connection?.destroy();
-            delete musicSessions[voiceChannel.id];
-            return;
-          }, 10000);
-        }
-        await this.playMusicUseCase.play(session);
-      });
     } catch (error: any) {
       console.error(error);
       await interaction.followUp(`❌ ${error.message || 'Erro desconhecido'}`);
