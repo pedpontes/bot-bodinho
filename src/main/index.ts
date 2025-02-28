@@ -1,8 +1,9 @@
+require('module-alias/register');
+import dev from '@/main/configs/config';
+import { deploy } from '@/main/deploy-commands';
 import { Client, Collection, Events, GatewayIntentBits } from 'discord.js';
 import fs from 'node:fs';
 import path from 'node:path';
-import dev from './configs/config';
-import { deploy } from './deploy-commands';
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates],
@@ -11,7 +12,7 @@ const client = new Client({
 client.commands = new Collection();
 
 (() => {
-  const commandsPath = path.join(__dirname, 'main/commands');
+  const commandsPath = path.join(__dirname, 'commands');
 
   const commandFiles = fs
     .readdirSync(commandsPath)
