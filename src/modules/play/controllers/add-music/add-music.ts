@@ -49,7 +49,10 @@ export class AddMusicController implements Controller {
 
       const url = await this.validationUrlUseCase.validate(input);
 
-      const musicsModel = await this.loadDetailsMusicsByUrlUseCase.load(url);
+      const musicsModel = await this.loadDetailsMusicsByUrlUseCase.load(
+        url,
+        voiceChannel.id,
+      );
 
       const isFirstMusic = await this.addMusicToSessionUseCase.add(
         voiceChannel,

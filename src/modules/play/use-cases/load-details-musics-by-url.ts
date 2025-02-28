@@ -1,16 +1,17 @@
 import { MusicDetails } from '@/domain/interfaces/music';
 import { LoadDetailsMusicsByUrl } from '@/domain/use-cases/play/load-details-musics-by-url';
+import { musicSessions } from '@/states/music-session';
 import { ChildProcessWithoutNullStreams, spawn } from 'node:child_process';
+import { randomUUID } from 'node:crypto';
 
 export class LoadDetailsMusicsByUrlUseCase implements LoadDetailsMusicsByUrl {
   constructor() {}
 
-  async load(url: string): Promise<MusicDetails[]> {
+  async load(url: string, channelId: string): Promise<MusicDetails[]> {
     return new Promise((resolve, reject) => {
       const musicDetails: MusicDetails[] = [];
       let isFirstItem = true;
-      const { stdout, stderr } = this.spawn(url);
-
+      const { stdout, stderr, kill } = this.spawn(url);
       stderr.on('data', (data) => {
         console.error('Erro na execução do yt-dlp:', data.toString());
         reject(new Error(data.toString()));
@@ -18,25 +19,34 @@ export class LoadDetailsMusicsByUrlUseCase implements LoadDetailsMusicsByUrl {
 
       stdout.on('data', (data) => {
         const output = data.toString();
-        console.log('Output do yt-dlp:', output);
 
         const [title, url] = output
-          .split(' - https://www.youtube.com/watch?v=')
+          .split(' - https://')
           .map((item: string) => item.trim());
 
         if (isFirstItem) {
           isFirstItem = false;
           const firstItem = {
             title,
-            url: 'https://www.youtube.com/watch?v=' + url,
+            url: 'https://' + url,
           };
           musicDetails.push(firstItem);
           resolve(musicDetails);
         } else {
-          musicDetails.push({
-            title,
-            url: 'https://www.youtube.com/watch?v=' + url,
-          });
+          if (musicSessions[channelId]) {
+            musicSessions[channelId].queue?.push({
+              id: randomUUID(),
+              title,
+              channelId,
+              url: 'https://' + url,
+              album: null,
+              artist: null,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            });
+          } else {
+            return;
+          }
         }
       });
 
