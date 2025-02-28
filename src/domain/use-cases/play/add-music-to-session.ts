@@ -1,4 +1,4 @@
-import { MusicDetails } from '@/modules/play/use-cases/load-details-musics-by-url';
+import { MusicDetails } from '@/domain/interfaces/music';
 import { VoiceBasedChannel } from 'discord.js';
 
 export interface AddMusicToSession {

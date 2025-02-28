@@ -1,8 +1,8 @@
+import { MusicDetails } from '@/domain/interfaces/music';
+import { musicSessions } from '@/states/music-session';
+import { randomUUID } from 'crypto';
 import { VoiceBasedChannel } from 'discord.js';
-import { randomUUID } from 'node:crypto';
-import { AddMusicToSession } from '../../../domain/use-cases/play/add-music-to-session';
-import { musicSessions } from '../../../states/music-session';
-import { MusicDetails } from './load-details-musics-by-url';
+import { AddMusicToSession } from '../controllers/add-music/add-music-protocols';
 
 export class AddMusicToSessionUseCase implements AddMusicToSession {
   constructor() {}

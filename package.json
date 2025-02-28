@@ -5,8 +5,11 @@
   "main": "index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon",
-    "build": "tsc",
+    "build": "tsc --build",
     "start": "cross-env NODE_ENV=production tsc && node dist/main/index.js"
+  },
+  "_moduleAliases": {
+    "@": "dist"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +23,7 @@
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.7",
     "ffmpeg-static": "^5.2.0",
+    "module-alias": "^2.2.3",
     "node-fetch": "^3.3.2",
     "openai": "^4.78.1",
     "prisma": "^6.2.1",

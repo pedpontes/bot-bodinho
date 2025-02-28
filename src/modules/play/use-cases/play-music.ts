@@ -1,7 +1,7 @@
-import { spawn, ChildProcessWithoutNullStreams } from 'child_process';
-import { MusicSession } from '../../../states/music-session';
+import { MusicSession } from '@/states/music-session';
 import { createAudioResource } from '@discordjs/voice';
-import { PlayMusic } from '../../../domain/use-cases/play/play-music';
+import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
+import { PlayMusic } from '../controllers/add-music/add-music-protocols';
 
 export class PlayMusicUseCase implements PlayMusic {
   constructor() {}

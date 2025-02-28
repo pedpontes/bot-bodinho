@@ -1,9 +1,10 @@
 import {
   CacheType,
   ChatInputCommandInteraction,
+  Controller,
   GuildMember,
-} from 'discord.js';
-import { Controller, musicSessions } from '../add-music/add-music-protocols';
+  musicSessions,
+} from '../add-music/add-music-protocols';
 
 export class LoadQueueController implements Controller {
   constructor() {}
@@ -26,7 +27,7 @@ export class LoadQueueController implements Controller {
 
       const session = musicSessions[voiceChannel.id];
 
-      if (!session.queue) {
+      if (!session?.queue) {
         await interaction.followUp('🎵 A fila está vazia!');
         return;
       }

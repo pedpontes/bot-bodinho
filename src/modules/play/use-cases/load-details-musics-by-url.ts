@@ -6,25 +6,44 @@ export class LoadDetailsMusicsByUrlUseCase implements LoadDetailsMusicsByUrl {
   constructor() {}
 
   async load(url: string): Promise<MusicDetails[]> {
-    return await new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const musicDetails: MusicDetails[] = [];
+      let isFirstItem = true;
       const { stdout, stderr } = this.spawn(url);
 
       stderr.on('data', (data) => {
-        console.error(data);
-        reject(data);
+        console.error('Erro na execução do yt-dlp:', data.toString());
+        reject(new Error(data.toString()));
       });
 
-      stdout.on('data', async (data) => {
-        const [title, url] = data
-          .toString()
-          .split(' - ')
+      stdout.on('data', (data) => {
+        const output = data.toString();
+        console.log('Output do yt-dlp:', output);
+
+        const [title, url] = output
+          .split(' - https://www.youtube.com/watch?v=')
           .map((item: string) => item.trim());
-        musicDetails.push({ title, url });
+
+        if (isFirstItem) {
+          isFirstItem = false;
+          const firstItem = {
+            title,
+            url: 'https://www.youtube.com/watch?v=' + url,
+          };
+          musicDetails.push(firstItem);
+          resolve(musicDetails);
+        } else {
+          musicDetails.push({
+            title,
+            url: 'https://www.youtube.com/watch?v=' + url,
+          });
+        }
       });
 
-      stdout.on('close', () => {
-        resolve(musicDetails);
+      stdout.on('end', () => {
+        if (musicDetails.length === 0) {
+          reject(new Error('Nenhuma música encontrada.'));
+        }
       });
     });
   }
