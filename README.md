@@ -16,7 +16,7 @@ Faça a instalação do serviço de download music, instruções em https://gith
 Verifique se o `yt-dlp` esta corretamente instalado utilizando o comando `yt-dlp --version` 
 
 Algo parecido com isso:
- ![image](https://github.com/user-attachments/assets/48501c35-2cd5-4747-9016-4cf484f7c4ce)
+ - ![image](https://github.com/user-attachments/assets/48501c35-2cd5-4747-9016-4cf484f7c4ce)
    
  ### Importante
 
