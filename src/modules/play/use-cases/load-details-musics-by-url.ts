@@ -1,14 +1,22 @@
-import { MusicDetails } from '@/domain/interfaces/music';
+import { MusicDetails, MusicModel } from '@/domain/interfaces/music';
 import { LoadDetailsMusicsByUrl } from '@/domain/use-cases/play/load-details-musics-by-url';
+import { addMusicToSessionObserver } from '@/main/observers/add-music';
+import { VoiceBasedChannel } from 'discord.js';
 import { ChildProcessWithoutNullStreams, spawn } from 'node:child_process';
+import { randomUUID } from 'node:crypto';
+import { PlayMusic } from '../controllers/add-music/add-music-protocols';
 
 export class LoadDetailsMusicsByUrlUseCase implements LoadDetailsMusicsByUrl {
-  constructor() {}
+  constructor(private readonly playMusicUseCase: PlayMusic) {}
 
-  async load(url: string): Promise<MusicDetails[]> {
+  async load(
+    url: string,
+    voiceChannel: VoiceBasedChannel,
+  ): Promise<MusicDetails[]> {
+    const sessions = addMusicToSessionObserver();
+
     return new Promise((resolve, reject) => {
       const musicDetails: MusicDetails[] = [];
-      let isFirstItem = true;
       const { stdout, stderr } = this.spawn(url);
 
       stderr.on('data', (data) => {
@@ -16,27 +24,40 @@ export class LoadDetailsMusicsByUrlUseCase implements LoadDetailsMusicsByUrl {
         reject(new Error(data.toString()));
       });
 
-      stdout.on('data', (data) => {
+      stdout.on('data', async (data) => {
         const output = data.toString();
-        console.log('Output do yt-dlp:', output);
 
         const [title, url] = output
           .split(' - https://www.youtube.com/watch?v=')
           .map((item: string) => item.trim());
 
-        if (isFirstItem) {
-          isFirstItem = false;
-          const firstItem = {
-            title,
-            url: 'https://www.youtube.com/watch?v=' + url,
+        const item: MusicModel = {
+          id: randomUUID(),
+          title: title || 'Música desconhecida',
+          url: 'https://www.youtube.com/watch?v=' + url,
+          album: null,
+          artist: null,
+          channelId: voiceChannel.id,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+
+        if (
+          !sessions[voiceChannel.id] ||
+          !sessions[voiceChannel.id].queue ||
+          !sessions[voiceChannel.id].queue?.length
+        ) {
+          sessions[voiceChannel.id] = {
+            voiceChannel,
+            queue: [item],
           };
-          musicDetails.push(firstItem);
-          resolve(musicDetails);
+
+          await this.playMusicUseCase.play(voiceChannel.id);
         } else {
-          musicDetails.push({
-            title,
-            url: 'https://www.youtube.com/watch?v=' + url,
-          });
+          sessions[voiceChannel.id] = {
+            voiceChannel,
+            queue: [...(sessions[voiceChannel.id].queue || []), item],
+          };
         }
       });
 

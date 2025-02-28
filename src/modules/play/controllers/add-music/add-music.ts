@@ -6,7 +6,6 @@ import {
   Controller,
   createAudioPlayer,
   GuildMember,
-  joinVoiceChannel,
   LoadDetailsMusicsByUrl,
   musicSessions,
   NoSubscriberBehavior,
@@ -49,43 +48,15 @@ export class AddMusicController implements Controller {
 
       const url = await this.validationUrlUseCase.validate(input);
 
-      const musicsModel = await this.loadDetailsMusicsByUrlUseCase.load(url);
+      await this.loadDetailsMusicsByUrlUseCase.load(url, voiceChannel);
 
-      const isFirstMusic = await this.addMusicToSessionUseCase.add(
-        voiceChannel,
-        musicsModel,
-      );
-
-      if (!isFirstMusic) {
-        await interaction.followUp('🎵 Adicionado à fila! \n Link: ' + url);
-        return;
-      }
-
-      await interaction.followUp('🎵 Tocando agora! \n Link: ' + url);
-
-      let session = musicSessions[voiceChannel.id];
-
-      if (!session) throw new Error('Sessão não encontrada');
+      // await this.addMusicToSessionUseCase.add(voiceChannel, musicsModel);
 
       const player = createAudioPlayer({
         behaviors: {
           noSubscriber: NoSubscriberBehavior.Play,
         },
       });
-
-      const connection = joinVoiceChannel({
-        channelId: voiceChannel.id,
-        guildId: voiceChannel.guild.id,
-        adapterCreator: voiceChannel.guild.voiceAdapterCreator,
-      });
-
-      musicSessions[voiceChannel.id] = {
-        ...session,
-        player,
-        connection,
-      };
-
-      await this.playMusicUseCase.play(musicSessions[voiceChannel.id]);
 
       player.on(AudioPlayerStatus.Idle, async () => {
         session = musicSessions[voiceChannel.id];
