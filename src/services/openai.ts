@@ -5,6 +5,10 @@ import {
   ImageGenerateParams,
 } from 'openai/resources';
 
+export const openai = new OpenAi({
+  apiKey: dev.openaiApiKey,
+});
+
 export class OpenAiHelper {
   openai: OpenAi;
 

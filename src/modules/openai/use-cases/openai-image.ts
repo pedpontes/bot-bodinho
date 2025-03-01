@@ -1,6 +1,6 @@
+import { OpenAiUseCase } from '@/domain/use-cases/open-ai/open-ai';
 import { OpenAiHelper } from '@/services/openai';
 import { Image, ImageGenerateParams } from 'openai/resources';
-import { OpenAiUseCase } from './openai-completion';
 
 export class OpenAiImage implements OpenAiUseCase<ImageGenerateParams, Image> {
   constructor(private readonly openAiHelper: OpenAiHelper) {}

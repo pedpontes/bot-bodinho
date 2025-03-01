@@ -1,10 +1,10 @@
+import { openai } from '@/services/openai';
 import {
   CacheType,
   ChatInputCommandInteraction,
   EmbedBuilder,
   SlashCommandBuilder,
 } from 'discord.js';
-import { openai } from '../../services/openai';
 import dev from '../configs/config';
 
 module.exports = {
