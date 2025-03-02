@@ -66,7 +66,7 @@ export class AddMusicController implements Controller {
               title: 'Música adicionada à fila',
               description: `**${musicModel.title}**`,
               color: 0x00ff00,
-              url: url,
+              url: musicModel.url,
               image: {
                 url: musicModel.thumbnail,
               },
@@ -89,7 +89,7 @@ export class AddMusicController implements Controller {
             image: {
               url: musicModel.thumbnail,
             },
-            url: url,
+            url: musicModel.url,
             footer: {
               icon_url: member.user.avatarURL() || undefined,
               text: member.user.username,
