@@ -129,7 +129,7 @@ export class AddMusicController implements Controller {
 
         session.queue?.shift();
 
-        if (!session.queue || !session.queue.length) {
+        if (!session?.queue || !session.queue.length) {
           setTimeout(() => {
             const sessionCurrent = musicSessions[voiceChannel.id];
             if (!sessionCurrent.queue || !sessionCurrent.queue.length)
