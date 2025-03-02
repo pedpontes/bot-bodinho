@@ -10,7 +10,16 @@ import { musicSessions } from '../../states/music-session';
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('skip')
-    .setDescription('Pular para a próxima música!'),
+    .setDescription('Pular para a próxima música!')
+    .addIntegerOption((option) =>
+      option
+        .setMinValue(1)
+        .setName('music')
+        .setDescription(
+          'Número da música na fila, utilize /queue para ver a lista',
+        )
+        .setRequired(false),
+    ),
   execute: async (interaction: ChatInputCommandInteraction<CacheType>) =>
     await execute(interaction),
 };
@@ -18,6 +27,7 @@ module.exports = {
 async function execute(interaction: ChatInputCommandInteraction<CacheType>) {
   const member = interaction.member as GuildMember;
   const voiceChannel = member.voice.channel;
+  const musicNumber = interaction.options.getInteger('music');
 
   if (!voiceChannel) {
     await interaction.reply(
@@ -33,7 +43,17 @@ async function execute(interaction: ChatInputCommandInteraction<CacheType>) {
     return;
   }
 
-  if (session.queue && session.queue.length) session.queue.shift();
+  if (session.queue && session.queue.length && !musicNumber)
+    session.queue.shift();
+
+  if (session.queue && session.queue.length && musicNumber) {
+    const index = musicNumber - 1;
+    if (index < 0 || index >= session.queue.length) {
+      await interaction.reply('⚠️ Número de música inválido!');
+      return;
+    }
+    session.queue = session.queue.filter((_, i) => i >= index);
+  }
 
   if (!session.queue || !session.queue.length) {
     session.connection?.destroy();
