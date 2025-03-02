@@ -7,9 +7,11 @@ export interface MusicModel {
   artist: string | null;
   album: string | null;
   channelId: string;
+  thumbnail: string;
 }
 
 export type MusicDetails = {
   url: string;
   title: string;
+  thumbnail: string;
 };

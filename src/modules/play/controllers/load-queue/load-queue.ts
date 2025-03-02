@@ -28,16 +28,23 @@ export class LoadQueueController implements Controller {
       const session = musicSessions[voiceChannel.id];
 
       if (!session?.queue) {
-        await interaction.followUp('🎵 A fila está vazia!');
+        await interaction.followUp({
+          embeds: [{ description: 'Não há músicas na fila!' }],
+        });
         return;
       }
 
-      await interaction.followUp(
-        '🎵 Fila de músicas: \n' +
-          session.queue
-            .map((music, index) => `${index + 1} - ${music.title}`)
-            .join('\n'),
-      );
+      await interaction.followUp({
+        embeds: [
+          {
+            title: 'Fila de músicas',
+            description: session.queue
+              .map((music, index) => `**${index + 1} - ${music.title}**`)
+              .join('\n'),
+            color: 0x800080,
+          },
+        ],
+      });
     } catch (error) {
       console.error(error);
       await interaction.followUp(

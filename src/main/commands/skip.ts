@@ -1,11 +1,11 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import {
-  ChatInputCommandInteraction,
   CacheType,
+  ChatInputCommandInteraction,
   GuildMember,
 } from 'discord.js';
-import { musicSessions } from '../../states/music-session';
 import { PlayMusicUseCase } from '../../modules/play/use-cases/play-music';
+import { musicSessions } from '../../states/music-session';
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -33,16 +33,30 @@ async function execute(interaction: ChatInputCommandInteraction<CacheType>) {
     return;
   }
 
-  if (session.queue && session.queue?.length > 0) {
-    session!.queue?.shift();
-  }
+  if (session.queue && session.queue.length) session.queue.shift();
 
-  if (!session.queue || session.queue?.length === 0) {
-    session.connection.destroy();
+  if (!session.queue || !session.queue.length) {
+    session.connection?.destroy();
     delete musicSessions[voiceChannel.id];
     await interaction.reply('🎶 Não há mais músicas na fila!');
   } else {
     new PlayMusicUseCase().play(session);
-    await interaction.reply('⏭️ Música pulada!');
+    await interaction.reply({
+      embeds: [
+        {
+          title: 'Música pulada',
+          url: session.queue[0].url,
+          description: `Tocando agora: **${session.queue[0].title}**`,
+          image: {
+            url: session.queue[0].thumbnail,
+          },
+          color: 0x00ff00,
+          footer: {
+            icon_url: member.user.avatarURL() || undefined,
+            text: member.user.username,
+          },
+        },
+      ],
+    });
   }
 }

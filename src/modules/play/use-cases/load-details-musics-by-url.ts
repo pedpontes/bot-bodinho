@@ -7,11 +7,11 @@ import { randomUUID } from 'node:crypto';
 export class LoadDetailsMusicsByUrlUseCase implements LoadDetailsMusicsByUrl {
   constructor() {}
 
-  async load(url: string, channelId: string): Promise<MusicDetails[]> {
+  async load(url: string, channelId: string): Promise<MusicDetails> {
     return new Promise((resolve, reject) => {
       const musicDetails: MusicDetails[] = [];
       let isFirstItem = true;
-      const { stdout, stderr, kill } = this.spawn(url);
+      const { stdout, stderr } = this.spawn(url);
       stderr.on('data', (data) => {
         console.error('Erro na execução do yt-dlp:', data.toString());
         reject(new Error(data.toString()));
@@ -20,25 +20,27 @@ export class LoadDetailsMusicsByUrlUseCase implements LoadDetailsMusicsByUrl {
       stdout.on('data', (data) => {
         const output = data.toString();
 
-        const [title, url] = output
+        const [title, rest] = output
           .split(' - https://')
           .map((item: string) => item.trim());
 
+        const [url, thumbnail] = rest.split(' - thumbnail: ');
+
+        const music = {
+          thumbnail: thumbnail.replace(/^"|"$/g, ''),
+          title: title.replace(/^"|"$/g, ''),
+          url: ('https://' + url).replace(/^"|"$/g, ''),
+        };
+
         if (isFirstItem) {
           isFirstItem = false;
-          const firstItem = {
-            title,
-            url: 'https://' + url,
-          };
-          musicDetails.push(firstItem);
-          resolve(musicDetails);
+          resolve(music);
         } else {
           if (musicSessions[channelId]) {
             musicSessions[channelId].queue?.push({
+              ...music,
               id: randomUUID(),
-              title,
               channelId,
-              url: 'https://' + url,
               album: null,
               artist: null,
               createdAt: new Date(),
@@ -63,7 +65,7 @@ export class LoadDetailsMusicsByUrlUseCase implements LoadDetailsMusicsByUrl {
       '--playlist-items',
       '1-10',
       '--print',
-      '"%(title)s - %(webpage_url)s"',
+      '"%(title)s - %(webpage_url)s - thumbnail: %(thumbnail)s"',
       url,
     ]);
   }

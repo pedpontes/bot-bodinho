@@ -49,22 +49,54 @@ export class AddMusicController implements Controller {
 
       const url = await this.validationUrlUseCase.validate(input);
 
-      const musicsModel = await this.loadDetailsMusicsByUrlUseCase.load(
+      const musicModel = await this.loadDetailsMusicsByUrlUseCase.load(
         url,
         voiceChannel.id,
       );
 
       const isFirstMusic = await this.addMusicToSessionUseCase.add(
         voiceChannel,
-        musicsModel,
+        [musicModel],
       );
 
       if (!isFirstMusic) {
-        await interaction.followUp('🎵 Adicionado à fila! \n Link: ' + url);
+        await interaction.followUp({
+          embeds: [
+            {
+              title: 'Música adicionada à fila',
+              description: `**${musicModel.title}**`,
+              color: 0x00ff00,
+              url: url,
+              image: {
+                url: musicModel.thumbnail,
+              },
+              footer: {
+                icon_url: member.user.avatarURL() || undefined,
+                text: member.user.username,
+              },
+            },
+          ],
+        });
         return;
       }
 
-      await interaction.followUp('🎵 Tocando agora! \n Link: ' + url);
+      await interaction.followUp({
+        embeds: [
+          {
+            title: 'Tocando agora',
+            color: 0x00ff00,
+            description: `**${musicModel.title}**`,
+            image: {
+              url: musicModel.thumbnail,
+            },
+            url: url,
+            footer: {
+              icon_url: member.user.avatarURL() || undefined,
+              text: member.user.username,
+            },
+          },
+        ],
+      });
 
       let session = musicSessions[voiceChannel.id];
 

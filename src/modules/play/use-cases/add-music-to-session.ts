@@ -24,6 +24,7 @@ export class AddMusicToSessionUseCase implements AddMusicToSession {
             channelId: voiceChannel.id,
             createdAt: new Date(),
             updatedAt: new Date(),
+            thumbnail: music.thumbnail,
           };
         }),
       };
@@ -40,6 +41,7 @@ export class AddMusicToSessionUseCase implements AddMusicToSession {
             channelId: voiceChannel.id,
             createdAt: new Date(),
             updatedAt: new Date(),
+            thumbnail: music.thumbnail,
           };
         }),
       );
