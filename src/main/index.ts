@@ -44,16 +44,16 @@ client.on(Events.InteractionCreate, async (interation) => {
 
   try {
     await command.execute(interation);
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     if (interation.replied || interation.deferred) {
       await interation.followUp({
-        content: 'Erro ao executar este comando!',
+        content: error.message || 'Erro desconhecido!',
         ephemeral: true,
       });
     } else {
       await interation.reply({
-        content: 'Erro ao executar este comando!',
+        content: error.message || 'Erro desconhecido!',
         ephemeral: true,
       });
     }

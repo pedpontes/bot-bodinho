@@ -6,8 +6,7 @@ export class OpenAiImage implements OpenAiUseCase<ImageGenerateParams, Image> {
   constructor(private readonly openAiHelper: OpenAiHelper) {}
 
   async handle(data: ImageGenerateParams): Promise<Image> {
-    if (!data || !data.prompt)
-      throw new Error('[OPENAI] ❌ O prompt é obrigatório.');
+    if (!data || !data.prompt) throw new Error('❌ O prompt é obrigatório.');
 
     const {
       model = 'dall-e-3',
@@ -17,16 +16,22 @@ export class OpenAiImage implements OpenAiUseCase<ImageGenerateParams, Image> {
     } = data;
 
     try {
-      const image = await this.openAiHelper.createImage({
-        ...data,
-        model,
-        response_format,
-        quality,
-        size,
-      });
-      return image;
-    } catch {
-      throw new Error('[OPENAI] ❌ Erro ao completar a solicitação.');
+      const { b64_json, url, revised_prompt } =
+        await this.openAiHelper.createImage({
+          ...data,
+          model,
+          response_format,
+          quality,
+          size,
+        });
+      return { b64_json, url, revised_prompt };
+    } catch (error: any) {
+      console.error('[OPENAI]', error);
+      if (error.code == 'content_policy_violation')
+        throw new Error(
+          '❌ Erro ao completar a solicitação. O conteúdo viola a política.',
+        );
+      throw new Error('❌ Erro ao completar a solicitação.');
     }
   }
 }

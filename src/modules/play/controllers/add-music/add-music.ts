@@ -105,6 +105,7 @@ export class AddMusicController implements Controller {
             delete musicSessions[voiceChannel.id];
             return;
           }, 10000);
+          return;
         }
         await this.playMusicUseCase.play(session);
       });
