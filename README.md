@@ -17,7 +17,11 @@ Verifique se o `yt-dlp` esta corretamente instalado utilizando o comando `yt-dlp
 
 Algo parecido com isso:
  - ![image](https://github.com/user-attachments/assets/48501c35-2cd5-4747-9016-4cf484f7c4ce)
-   
+
+O puppeteer demanda um browser para busca de musicas, caso não tenha, execute:
+
+`npx puppeteer install`
+
  ### Importante
 
  - Sempre verifique se o `yt-dlp` esteja atualizado, isso já soluciona 80% dos problemas que podem ocorrer.
