@@ -3,6 +3,9 @@
 Insira o `token` e `clientId` do seu bot em .env, exemplo em `.env.example`.
 
 Comandos:
+ - `/skip`: Pular musica, com `option` tocar uma musica especifica da fila. `option` é o número da música na fila.   
+ - `/queue`: Listar músicas da fila.
+ - `/creator`: Geração de imagem com IA.
  - `/play`: Tocar música com URL ou nome do youtube.
  - `/ia`: Converse com a IA.
  - `/skip`: Pular musica da playlist.
