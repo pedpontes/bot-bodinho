@@ -4,6 +4,7 @@ import { deploy } from '@/main/deploy-commands';
 import { Client, Collection, Events, GatewayIntentBits } from 'discord.js';
 import fs from 'node:fs';
 import path from 'node:path';
+import { logger } from './logger';
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates],
@@ -45,6 +46,7 @@ client.on(Events.InteractionCreate, async (interation) => {
   try {
     await command.execute(interation);
   } catch (error: any) {
+    logger.error(error.message);
     console.error(error);
     if (interation.replied || interation.deferred) {
       await interation.followUp({

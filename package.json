@@ -29,6 +29,7 @@
     "openai": "^4.78.1",
     "prisma": "^6.2.1",
     "puppeteer": "^24.1.0",
+    "winston": "^3.17.0",
     "ytdl-core": "^4.11.5"
   },
   "repository": "https://github.com/pedpontes/bot-bodinho.git",
