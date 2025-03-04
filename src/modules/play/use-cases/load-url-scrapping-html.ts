@@ -13,7 +13,7 @@ export class LoadUrlScrappingHtmlUseCase implements LoadUrlScrappingHtml {
       await page.goto(
         `https://www.youtube.com/results?search_query=${content.split(' ').join('+').trim()}`,
         {
-          waitUntil: 'domcontentloaded',
+          waitUntil: 'networkidle2',
         },
       );
 
