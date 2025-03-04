@@ -6,7 +6,7 @@ Comandos:
  - `/skip`: Pular musica, com `option` tocar uma musica especifica da fila. `option` é o número da música na fila.   
  - `/queue`: Listar músicas da fila.
  - `/creator`: Geração de imagem com IA.
- - `/play`: Tocar música com URL ou nome do youtube.
+ - `/play`: Tocar música com URL do YT ou nome da música.
  - `/ia`: Converse com a IA.
  - `/skip`: Pular musica da playlist.
  - `/destroy`: Finalize tire o bot do canal de música e reset na playlist.
