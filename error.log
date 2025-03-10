@@ -1,3 +1,4 @@
 {"level":"error","timestamp":"2025-03-04T01:31:44.177Z"}
 {"level":"error","timestamp":"2025-03-04T01:32:24.488Z"}
 {"level":"error","message":"Teste de erro","timestamp":"2025-03-04T01:33:34.614Z"}
+{"level":"error","message":"Invalid Form Body\ncontent[BASE_TYPE_MAX_LENGTH]: Must be 2000 or fewer in length.","timestamp":"2025-03-08T23:00:54.713Z"}
