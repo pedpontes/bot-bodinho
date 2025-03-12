@@ -1,3 +1,7 @@
+
+<img src="https://github.com/user-attachments/assets/e3d43dd7-9792-400a-980e-85d23f00b36a" alt="Bodinho tocando música" width="100%" height="500px">
+
+
 ## Bot Bodinho
 
 Insira o `token` e `clientId` do seu bot em .env, exemplo em `.env.example`.
