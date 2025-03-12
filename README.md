@@ -8,7 +8,6 @@ Comandos:
  - `/creator`: Geração de imagem com IA.
  - `/play`: Tocar música com URL do YT ou nome da música.
  - `/ia`: Converse com a IA.
- - `/skip`: Pular musica da playlist.
  - `/destroy`: Finalize tire o bot do canal de música e reset na playlist.
  - `/batbox`: Envie um file `.mp3` ou `.wav` para tocar.
 
