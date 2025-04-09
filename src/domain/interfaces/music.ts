@@ -1,17 +1,13 @@
 export interface MusicModel {
-  url: string;
-  createdAt: Date;
   id: string;
-  updatedAt: Date;
-  title: string | null;
+  name: string;
   artist: string | null;
-  album: string | null;
-  channelId: string;
-  thumbnail: string;
+  url: string;
+  imageUrl: string | null;
+  playlistId: string | null;
+
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-export type MusicDetails = {
-  url: string;
-  title: string;
-  thumbnail: string;
-};
+export type AddMusicModel = Omit<MusicModel, 'id' | 'createdAt' | 'updatedAt'>;
