@@ -34,6 +34,10 @@ O puppeteer demanda um browser para busca de musicas, caso não tenha, execute:
 
  Utilize o comando `yt-dlp -U` para fazer atualizações.
 
+## 💖 Curtiu o projeto?
+
+Se esse projeto te ajudou de alguma forma, não esquece de deixar uma ⭐ aqui no GitHub!  
+Isso me motiva a continuar criando e compartilhando novos projetos com a comunidade 🚀
 
 
 
