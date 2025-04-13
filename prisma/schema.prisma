@@ -13,23 +13,35 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Music {
-  id        String   @id @default(cuid())
-  title     String?
-  artist    String?
-  album     String?
-  url       String
+model Playlist {
+  id   String @id @default(uuid())
+  name String
+
+  description String?
+  imageUrl    String?
+
+  Music Music[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  channelId String
-  Channel   Channel  @relation(fields: [channelId], references: [channelVoiceId])
+
+  @@map("playlist")
 }
 
-model Channel {
-  id             String   @id @default(cuid())
-  name           String?
-  queeue         Music[]
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  channelVoiceId String   @unique
+model Music {
+  id     String  @id @default(uuid())
+  name   String
+  artist String?
+  album  String?
+
+  url      String
+  imageUrl String?
+
+  Playlist   Playlist? @relation(fields: [playlistId], references: [id])
+  playlistId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("music")
 }

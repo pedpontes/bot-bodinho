@@ -1,5 +1,7 @@
-import { ChatInputCommandInteraction, CacheType } from 'discord.js';
+import { CacheType, ChatInputCommandInteraction } from 'discord.js';
 
 export interface Controller {
-  handle: (interaction: ChatInputCommandInteraction<CacheType>) => Promise<any>;
+  handle: (
+    interaction: ChatInputCommandInteraction<CacheType>,
+  ) => Promise<void>;
 }
