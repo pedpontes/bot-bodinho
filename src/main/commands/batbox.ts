@@ -1,19 +1,17 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import {
-  ChatInputCommandInteraction,
-  CacheType,
-  GuildMember,
-} from 'discord.js';
-import fs from 'fs';
-import path from 'path';
-import {
-  joinVoiceChannel,
+  AudioPlayerStatus,
   createAudioPlayer,
   createAudioResource,
+  joinVoiceChannel,
   VoiceConnectionStatus,
-  AudioPlayerStatus,
 } from '@discordjs/voice';
 import axios from 'axios';
+import {
+  CacheType,
+  ChatInputCommandInteraction,
+  GuildMember,
+} from 'discord.js';
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -58,7 +56,7 @@ module.exports = {
 
       const response = (
         await axios.get(attachment.url, {
-          responseType: 'arraybuffer',
+          responseType: 'stream',
         })
       ).data;
 
@@ -72,7 +70,7 @@ module.exports = {
         adapterCreator: voiceChannel.guild.voiceAdapterCreator,
       });
 
-      const resource = createAudioResource(fs.createReadStream(response));
+      const resource = createAudioResource(response);
       const player = createAudioPlayer();
 
       player.play(resource);

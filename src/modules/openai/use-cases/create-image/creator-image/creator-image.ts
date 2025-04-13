@@ -13,7 +13,7 @@ export class CreatorImageUseCase implements CreatorImage {
       n: 1,
       prompt: input,
       quality: 'hd',
-      style: 'vivid',
+      style: 'natural',
       size: '1024x1024',
       response_format: 'url',
     });

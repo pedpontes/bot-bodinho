@@ -2,3 +2,8 @@
 {"level":"error","timestamp":"2025-03-04T01:32:24.488Z"}
 {"level":"error","message":"Teste de erro","timestamp":"2025-03-04T01:33:34.614Z"}
 {"level":"error","message":"Invalid Form Body\ncontent[BASE_TYPE_MAX_LENGTH]: Must be 2000 or fewer in length.","timestamp":"2025-03-08T23:00:54.713Z"}
+{"level":"error","message":"❌ Erro ao completar a solicitação. O conteúdo viola a política.","timestamp":"2025-04-01T05:04:57.572Z"}
+{"level":"error","message":"❌ Erro ao completar a solicitação. O conteúdo viola a política.","timestamp":"2025-04-01T05:05:21.963Z"}
+{"level":"error","message":"❌ Erro ao completar a solicitação. O conteúdo viola a política.","timestamp":"2025-04-01T05:06:34.146Z"}
+{"level":"error","message":"❌ Erro ao completar a solicitação. O conteúdo viola a política.","timestamp":"2025-04-01T05:08:22.137Z"}
+{"level":"error","message":"Uncaught Exception: Cannot destroy VoiceConnection - it has already been destroyed\nError: Cannot destroy VoiceConnection - it has already been destroyed\n    at VoiceConnection.destroy (C:\\Users\\Pedro Pontes\\Documents\\dev\\bot-bodinho\\node_modules\\@discordjs\\voice\\dist\\index.js:1978:13)\n    at Timeout._onTimeout (C:\\Users\\Pedro Pontes\\Documents\\dev\\bot-bodinho\\dist\\modules\\play\\controllers\\add-music\\add-music.js:104:99)\n    at listOnTimeout (node:internal/timers:594:17)\n    at process.processTimers (node:internal/timers:529:7)","timestamp":"2025-04-02T02:32:27.450Z"}
