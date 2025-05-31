@@ -15,6 +15,6 @@ export const makePlayMusic = (): AddMusicController => {
     ),
     new AddMusicToSessionUseCase(),
     new PlayMusicUseCase(),
-    new LoadDetailsMusicsByUrlUseCase(),
+    new LoadDetailsMusicsByUrlUseCase(new YtdlHelper()),
   );
 };
