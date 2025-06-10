@@ -2,6 +2,7 @@ require('module-alias/register');
 import dev from '@/main/configs/config';
 import { deploy } from '@/main/deploy-commands';
 import { Client, Collection, Events, GatewayIntentBits } from 'discord.js';
+import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { logger } from './logger';
@@ -12,7 +13,31 @@ const client = new Client({
 
 client.commands = new Collection();
 
-(() => {
+(async () => {
+  await new Promise((resolve) => {
+    const updateProcess = spawn('yt-dlp', ['-U'], {
+      stdio: 'inherit',
+    });
+
+    updateProcess.on('error', (error) => {
+      console.error('Erro ao atualizar yt-dlp:', error);
+      process.exit(1);
+    });
+
+    updateProcess.on('message', (message) => {
+      console.log('Mensagem do processo de atualização:', message);
+    });
+
+    updateProcess.on('exit', (code) => {
+      if (code !== 0) {
+        console.error(`yt-dlp saiu com código ${code}`);
+        process.exit(code);
+      }
+      console.log('yt-dlp atualizado com sucesso!');
+      resolve(true);
+    });
+  });
+
   const commandsPath = path.join(__dirname, 'commands');
 
   const commandFiles = fs
