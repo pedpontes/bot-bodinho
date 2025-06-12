@@ -1,3 +1,4 @@
+import { MusicSessionStateRepository } from '@/infra/music-session/music-session-repository';
 import { AddMusicController } from '@/modules/play/controllers/add-music/add-music';
 import { AddMusicToSessionUseCase } from '@/modules/play/use-cases/add-music-to-session';
 import { AddMusicUseCase } from '@/modules/play/use-cases/add-music/add-music';
@@ -18,7 +19,11 @@ export const makePlayMusic = (): AddMusicController => {
       ),
       new LoadDetailsMusicsByUrlUseCase(),
       new AddMusicToSessionUseCase(),
-      new PlayBackUseCase(new PlayMusicUseCase(new YtdlHelper())),
+      new PlayBackUseCase(
+        new PlayMusicUseCase(new YtdlHelper()),
+        new MusicSessionStateRepository(),
+      ),
+      new MusicSessionStateRepository(),
     ),
   );
 };

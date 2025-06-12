@@ -1,7 +1,7 @@
 import { AddMusicToSession } from '@/domain/use-cases/play/add-music-to-session';
 import { LoadDetailsMusicsByUrl } from '@/domain/use-cases/play/load-details-musics-by-url';
 import { ValidationUrl } from '@/domain/use-cases/play/validation-url';
-import { musicSessions } from '@/states/music-session';
+import { MusicSessionRepository } from '@/infra/music-session/music-session-repository';
 import {
   GuildMember,
   InteractionReplyOptions,
@@ -27,6 +27,7 @@ export class AddMusicUseCase implements AddMusic {
     private readonly loadDetailsMusicsByUrlUseCase: LoadDetailsMusicsByUrl,
     private readonly addMusicToSessionUseCase: AddMusicToSession,
     private readonly playBackUseCase: PlayBack,
+    private readonly musicSessionRepository: MusicSessionRepository,
   ) {}
 
   async add(
@@ -66,11 +67,11 @@ export class AddMusicUseCase implements AddMusic {
         },
       };
 
-    let session = musicSessions[voiceChannel.id];
+    const session = this.musicSessionRepository.load(voiceChannel.id);
 
     if (!session) throw new Error('Sessão não encontrada');
 
-    this.playBackUseCase.play(session, voiceChannel);
+    this.playBackUseCase.play(voiceChannel);
 
     return {
       options: {
