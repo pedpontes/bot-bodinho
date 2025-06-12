@@ -11,9 +11,8 @@ export class ValidationUrlUseCase implements ValidationUrl {
   async validate(input: string): Promise<string> {
     let url = input;
 
-    if (!input.includes('https://www.youtube.com')) {
-      url = await this.loadUrlScrappingHtmlUseCase.load(input);
-    }
+    if (!input.includes('https://www.youtube.com'))
+      url = this.ytdlHelper.loadUrlMusic(input);
 
     if (!this.ytdlHelper.validateURL(url)) throw new Error('❌ URL inválida!');
 
