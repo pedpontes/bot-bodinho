@@ -1,26 +1,24 @@
+import { YTProtocols } from '@/services/ytdl';
 import { MusicSession } from '@/states/music-session';
 import { createAudioResource, StreamType } from '@discordjs/voice';
-import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
 import { PlayMusic } from '../controllers/add-music/add-music-protocols';
 
 export class PlayMusicUseCase implements PlayMusic {
-  constructor() {}
+  constructor(private readonly YTHelper: YTProtocols) {}
 
   async play(session: MusicSession): Promise<void> {
-    if (
-      session!.queue?.length === 0 ||
-      !session.queue ||
-      !session.connection ||
-      !session.player
-    ) {
+    if (!session.queue?.length || !session.connection || !session.player) {
       session.connection?.destroy();
       return;
     }
 
-    const { stdout, stderr } = this.spawn(session.queue[0].url);
+    const [{ url }] = session.queue;
+
+    const { stdout, stderr } = this.YTHelper.loadMusic(url);
 
     stderr.on('data', (data) => {
-      console.log(data.toString());
+      console.error(`[ERROR] [PLAY_MUSIC] ${data}`);
+      throw new Error(`[ERROR] [PLAY_MUSIC] ${data}`);
     });
 
     const resource = createAudioResource(stdout, {
@@ -30,9 +28,5 @@ export class PlayMusicUseCase implements PlayMusic {
     });
     session.player.play(resource);
     session.connection.subscribe(session.player);
-  }
-
-  private spawn(url: string): ChildProcessWithoutNullStreams {
-    return spawn('yt-dlp', ['-x', '-q', '-o', '-', url]);
   }
 }
