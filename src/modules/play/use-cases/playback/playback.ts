@@ -19,6 +19,8 @@ export class PlayBackUseCase implements PlayBack {
   ) {}
 
   async play(voiceChannel: VoiceBasedChannel): Promise<void> {
+    const { id: voiceChannelId } = voiceChannel;
+
     const player = createAudioPlayer({
       behaviors: {
         noSubscriber: NoSubscriberBehavior.Play,
@@ -26,12 +28,10 @@ export class PlayBackUseCase implements PlayBack {
     });
 
     const connection = joinVoiceChannel({
-      channelId: voiceChannel.id,
+      channelId: voiceChannelId,
       guildId: voiceChannel.guild.id,
       adapterCreator: voiceChannel.guild.voiceAdapterCreator,
     });
-
-    const voiceChannelId = voiceChannel.id;
 
     const newSessionMusic = {
       player,
@@ -65,7 +65,5 @@ export class PlayBackUseCase implements PlayBack {
 
       await this.playMusicUseCase.play(currentSession);
     });
-
-    await this.playMusicUseCase.play(newSessionMusic);
   }
 }

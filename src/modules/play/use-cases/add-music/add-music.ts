@@ -71,7 +71,7 @@ export class AddMusicUseCase implements AddMusic {
 
     if (!session) throw new Error('Sessão não encontrada');
 
-    this.playBackUseCase.play(voiceChannel);
+    await this.playBackUseCase.play(voiceChannel);
 
     return {
       options: {
