@@ -1,3 +1,4 @@
+import { YtdlHelper } from '@/services/ytdl';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import {
   CacheType,
@@ -60,7 +61,7 @@ async function execute(interaction: ChatInputCommandInteraction<CacheType>) {
     delete musicSessions[voiceChannel.id];
     await interaction.reply('🎶 Não há mais músicas na fila!');
   } else {
-    new PlayMusicUseCase().play(session);
+    new PlayMusicUseCase(new YtdlHelper()).play(session);
     await interaction.reply({
       embeds: [
         {
