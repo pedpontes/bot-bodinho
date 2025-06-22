@@ -1,4 +1,4 @@
-import dev from '@/main/configs/config';
+import { env } from '@/main/configs/config';
 import OpenAi from 'openai';
 import {
   CompletionCreateParamsNonStreaming,
@@ -6,17 +6,17 @@ import {
 } from 'openai/resources';
 
 export const openai = new OpenAi({
-  apiKey: dev.openaiApiKey,
+  apiKey: env.openaiApiKey,
 });
 
 export class OpenAiHelper {
   openai: OpenAi;
 
   constructor() {
-    if (!dev.openaiApiKey) throw new Error('OpenAI API keyis missing');
+    if (!env.openaiApiKey) throw new Error('OpenAI API key is missing');
 
     this.openai = new OpenAi({
-      apiKey: dev.openaiApiKey,
+      apiKey: env.openaiApiKey,
     });
   }
 

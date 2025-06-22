@@ -1,5 +1,5 @@
 require('module-alias/register');
-import dev from '@/main/configs/config';
+import { env } from '@/main/configs/config';
 import { deploy } from '@/main/deploy-commands';
 import { Client, Collection, Events, GatewayIntentBits } from 'discord.js';
 import { spawn } from 'node:child_process';
@@ -98,4 +98,4 @@ client.on(Events.Error, (error) => {
   });
 });
 
-client.login(dev.token);
+client.login(env.token);
