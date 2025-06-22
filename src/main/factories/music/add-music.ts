@@ -11,19 +11,25 @@ import { PuppeteerHelper } from '@/services/puppeteer';
 import { YtdlHelper } from '@/services/ytdl';
 
 export const makePlayMusic = (): AddMusicController => {
+  // repository
+  const musicSessionStateRepository = new MusicSessionStateRepository();
+
   return new AddMusicController(
     new AddMusicUseCase(
       new ValidationUrlUseCase(
         new LoadUrlScrappingHtmlUseCase(new PuppeteerHelper()),
         new YtdlHelper(),
       ),
-      new LoadDetailsMusicsByUrlUseCase(),
-      new AddMusicToSessionUseCase(),
+      new LoadDetailsMusicsByUrlUseCase(
+        new MusicSessionStateRepository(),
+        new AddMusicToSessionUseCase(musicSessionStateRepository),
+      ),
+      new AddMusicToSessionUseCase(musicSessionStateRepository),
       new PlayBackUseCase(
         new PlayMusicUseCase(new YtdlHelper()),
-        new MusicSessionStateRepository(),
+        musicSessionStateRepository,
       ),
-      new MusicSessionStateRepository(),
+      musicSessionStateRepository,
     ),
   );
 };

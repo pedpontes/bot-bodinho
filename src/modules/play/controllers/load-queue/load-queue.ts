@@ -13,6 +13,7 @@ export class LoadQueueController implements Controller {
     interaction: ChatInputCommandInteraction<CacheType>,
   ): Promise<any> {
     try {
+      console.log(interaction.guild?.id || interaction.guildId);
       await interaction.deferReply();
 
       const member = interaction.member as GuildMember;
