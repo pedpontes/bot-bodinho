@@ -22,7 +22,16 @@ export class YtdlHelper implements YTProtocols {
   }
 
   loadMusic(url: string): ChildProcessWithoutNullStreams {
-    return spawn('yt-dlp', ['-x', '-q', '-o', '-', url]);
+    return spawn('yt-dlp', [
+      '-f',
+      'bestaudio[ext=webm]/bestaudio',
+      '--quiet',
+      '--no-playlist',
+      '--no-check-certificate',
+      '-o',
+      '-',
+      url,
+    ]);
   }
 
   loadUrlMusic(input: string): string {
