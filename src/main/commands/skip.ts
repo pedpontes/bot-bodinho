@@ -1,3 +1,6 @@
+import { MusicSessionStateRepository } from '@/infra/music-session/music-session-repository';
+import { PlayMusicUseCase } from '@/modules/play/use-cases/play-music';
+import { PlayBackUseCase } from '@/modules/play/use-cases/playback/playback';
 import { YtdlHelper } from '@/services/ytdl';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import {
@@ -5,7 +8,6 @@ import {
   ChatInputCommandInteraction,
   GuildMember,
 } from 'discord.js';
-import { PlayMusicUseCase } from '../../modules/play/use-cases/play-music';
 import { musicSessions } from '../../states/music-session';
 
 module.exports = {
@@ -61,7 +63,11 @@ async function execute(interaction: ChatInputCommandInteraction<CacheType>) {
     delete musicSessions[voiceChannel.id];
     await interaction.reply('🎶 Não há mais músicas na fila!');
   } else {
-    new PlayMusicUseCase(new YtdlHelper()).play(session);
+    new PlayBackUseCase(
+      new PlayMusicUseCase(new YtdlHelper()),
+      new MusicSessionStateRepository(),
+    ).play(voiceChannel);
+
     await interaction.reply({
       embeds: [
         {
