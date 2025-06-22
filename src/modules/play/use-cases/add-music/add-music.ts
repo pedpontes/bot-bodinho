@@ -2,6 +2,7 @@ import { AddMusicToSession } from '@/domain/use-cases/play/add-music-to-session'
 import { LoadDetailsMusicsByUrl } from '@/domain/use-cases/play/load-details-musics-by-url';
 import { ValidationUrl } from '@/domain/use-cases/play/validation-url';
 import { MusicSessionRepository } from '@/infra/music-session/music-session-repository';
+import { getVoiceConnection } from '@discordjs/voice';
 import {
   GuildMember,
   InteractionReplyOptions,
@@ -37,16 +38,30 @@ export class AddMusicUseCase implements AddMusic {
   ): Promise<AddMusicResponse> {
     const url = await this.validationUrlUseCase.validate(input);
 
+    let session = this.musicSessionRepository.load(voiceChannel.id);
+
+    if (!session) {
+      session = this.musicSessionRepository.add(voiceChannel.id, {
+        connection: undefined,
+        player: undefined,
+        queue: [],
+      });
+    }
+
     const musicModel = await this.loadDetailsMusicsByUrlUseCase.load(
       url,
       voiceChannel.id,
     );
 
-    const isFirstMusic = await this.addMusicToSessionUseCase.add(voiceChannel, [
-      musicModel,
-    ]);
+    const alreadyJoinedVoiceChannel = getVoiceConnection(voiceChannel.guild.id);
 
-    if (!isFirstMusic)
+    console.log('Esta num canal de voz:', alreadyJoinedVoiceChannel);
+
+    if (!alreadyJoinedVoiceChannel) {
+      await this.playBackUseCase.play(voiceChannel);
+    }
+
+    if (session.queue && session.queue.length) {
       return {
         options: {
           embeds: [
@@ -66,12 +81,7 @@ export class AddMusicUseCase implements AddMusic {
           ],
         },
       };
-
-    const session = this.musicSessionRepository.load(voiceChannel.id);
-
-    if (!session) throw new Error('Sessão não encontrada');
-
-    await this.playBackUseCase.play(voiceChannel);
+    }
 
     return {
       options: {

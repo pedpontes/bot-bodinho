@@ -1,16 +1,19 @@
 import { MusicDetails } from '@/domain/interfaces/music';
 import { LoadDetailsMusicsByUrl } from '@/domain/use-cases/play/load-details-musics-by-url';
-import { musicSessions } from '@/states/music-session';
+import { MusicSessionRepository } from '@/infra/music-session/music-session-repository';
 import { ChildProcessWithoutNullStreams, spawn } from 'node:child_process';
-import { randomUUID } from 'node:crypto';
+import { AddMusicToSession } from '../controllers/add-music/add-music-protocols';
 
 export class LoadDetailsMusicsByUrlUseCase implements LoadDetailsMusicsByUrl {
-  constructor() {}
+  constructor(
+    private readonly musicSessionRepository: MusicSessionRepository,
+    private readonly addMusicToSessionUseCase: AddMusicToSession,
+  ) {}
 
   async load(url: string, channelId: string): Promise<MusicDetails> {
     return new Promise((resolve, reject) => {
       const musicDetails: MusicDetails[] = [];
-      let isFirstItem = true;
+
       const { stdout, stderr } = this.spawn(url);
       stderr.on('data', (data) => {
         console.error('Erro na execução do yt-dlp:', data.toString());
@@ -18,6 +21,7 @@ export class LoadDetailsMusicsByUrlUseCase implements LoadDetailsMusicsByUrl {
       });
 
       stdout.on('data', (data) => {
+        const session = this.musicSessionRepository.load(channelId);
         const output = data.toString();
 
         const [title, rest] = output
@@ -32,20 +36,12 @@ export class LoadDetailsMusicsByUrlUseCase implements LoadDetailsMusicsByUrl {
           url: ('https://' + url).replace(/^"|"$/g, ''),
         };
 
-        if (isFirstItem) {
-          isFirstItem = false;
+        if (session && !session.queue?.length) {
+          this.addMusicToSessionUseCase.add(channelId, [music]);
           resolve(music);
         } else {
-          if (musicSessions[channelId]) {
-            musicSessions[channelId].queue?.push({
-              ...music,
-              id: randomUUID(),
-              channelId,
-              album: null,
-              artist: null,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-            });
+          if (session) {
+            this.addMusicToSessionUseCase.add(channelId, [music]);
           } else {
             return;
           }

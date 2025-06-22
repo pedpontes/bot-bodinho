@@ -1,6 +1,6 @@
 {
-    "exec": "yarn build && node dist/index.js",
-    "watch": ["src"],
-    "ext": "ts",
-    "ignore": ["src/**/*.test.ts"]
-  }
+  "exec": "yarn build && node dist/main/index.js",
+  "watch": ["src"],
+  "ext": "ts",
+  "ignore": ["src/**/*.test.ts"]
+}

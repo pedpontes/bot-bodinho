@@ -27,7 +27,6 @@
     "module-alias": "^2.2.3",
     "node-fetch": "^3.3.2",
     "openai": "^4.78.1",
-    "prisma": "^6.2.1",
     "puppeteer": "^24.1.0",
     "winston": "^3.17.0",
     "ytdl-core": "^4.11.5"

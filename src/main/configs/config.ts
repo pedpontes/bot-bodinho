@@ -25,7 +25,7 @@ if (
   process.exit(1);
 }
 
-export default {
+export const env = {
   ytl: {
     email: process.env.EMAIL,
     pass: process.env.PASSWORD,
@@ -33,4 +33,8 @@ export default {
   token: process.env.TOKEN,
   clientId: process.env.CLIENT_ID,
   openaiApiKey: process.env.OPENAI_API_KEY,
+  flowise: {
+    baseUrl: process.env.FLOWISE_BASE_URL,
+    apiKey: process.env.FLOWISE_API_KEY,
+  },
 };
