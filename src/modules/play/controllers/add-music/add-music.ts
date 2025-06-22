@@ -34,13 +34,13 @@ export class AddMusicController implements Controller {
         return;
       }
 
-      const response = await this.addMusicUseCase.add(
+      const { options } = await this.addMusicUseCase.add(
         input,
         voiceChannel,
         member,
       );
 
-      await interaction.followUp(response.options);
+      await interaction.followUp(options);
     } catch (error: any) {
       console.error(error);
       await interaction.followUp(`❌ ${error.message || 'Erro desconhecido'}`);

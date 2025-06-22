@@ -59,30 +59,55 @@ client.commands = new Collection();
 })();
 
 client.on(Events.InteractionCreate, async (interation) => {
-  if (!interation.isChatInputCommand()) return;
+  if (interation.isChatInputCommand()) {
+    const command = interation.client.commands.get(interation.commandName);
 
-  const command = interation.client.commands.get(interation.commandName);
+    if (!command) {
+      interation.reply(`Nenhum comando encontrado ${interation.commandName}`);
+      return;
+    }
 
-  if (!command) {
-    interation.reply(`Nenhum comando encontrado ${interation.commandName}`);
-    return;
-  }
+    try {
+      await command.execute(interation);
+    } catch (error: any) {
+      logger.error(error.message);
+      console.error(error);
+      if (interation.replied || interation.deferred) {
+        await interation.followUp({
+          content: error.message || 'Erro desconhecido!',
+          ephemeral: true,
+        });
+      } else {
+        await interation.reply({
+          content: error.message || 'Erro desconhecido!',
+          ephemeral: true,
+        });
+      }
+    }
+  } else if (interation.isButton()) {
+    const command = interation.client.commands.get(interation.customId);
 
-  try {
-    await command.execute(interation);
-  } catch (error: any) {
-    logger.error(error.message);
-    console.error(error);
-    if (interation.replied || interation.deferred) {
-      await interation.followUp({
-        content: error.message || 'Erro desconhecido!',
-        ephemeral: true,
-      });
-    } else {
-      await interation.reply({
-        content: error.message || 'Erro desconhecido!',
-        ephemeral: true,
-      });
+    if (!command) {
+      interation.reply(`Nenhum comando encontrado ${interation.customId}`);
+      return;
+    }
+
+    try {
+      await command.execute(interation);
+    } catch (error: any) {
+      logger.error(error.message);
+      console.error(error);
+      if (interation.replied || interation.deferred) {
+        await interation.followUp({
+          content: error.message || 'Erro desconhecido!',
+          ephemeral: true,
+        });
+      } else {
+        await interation.reply({
+          content: error.message || 'Erro desconhecido!',
+          ephemeral: true,
+        });
+      }
     }
   }
 });

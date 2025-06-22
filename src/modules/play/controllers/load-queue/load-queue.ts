@@ -39,9 +39,11 @@ export class LoadQueueController implements Controller {
         embeds: [
           {
             title: 'Fila de músicas',
-            description: session.queue
-              .map((music, index) => `**${index + 1} - ${music.title}**`)
-              .join('\n'),
+            description:
+              session.queue
+                .map((music, index) => `**${index + 1} - ${music.title}**`)
+                .join('\n') +
+              '\n\n***Utilize `/skip [numero]` para iniciar uma música especifica da fila***',
             color: 0x800080,
           },
         ],

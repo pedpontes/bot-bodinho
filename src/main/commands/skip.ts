@@ -4,6 +4,9 @@ import { PlayBackUseCase } from '@/modules/play/use-cases/playback/playback';
 import { YtdlHelper } from '@/services/ytdl';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
   CacheType,
   ChatInputCommandInteraction,
   GuildMember,
@@ -30,7 +33,7 @@ module.exports = {
 async function execute(interaction: ChatInputCommandInteraction<CacheType>) {
   const member = interaction.member as GuildMember;
   const voiceChannel = member.voice.channel;
-  const musicNumber = interaction.options.getInteger('music');
+  const musicNumber = interaction?.options?.getInteger('music') ?? undefined;
 
   if (!voiceChannel) {
     await interaction.reply(
@@ -83,6 +86,18 @@ async function execute(interaction: ChatInputCommandInteraction<CacheType>) {
             text: member.user.username,
           },
         },
+      ],
+      components: [
+        new ActionRowBuilder<ButtonBuilder>().addComponents(
+          new ButtonBuilder()
+            .setCustomId('skip')
+            .setLabel('⏭️ Próxima música')
+            .setStyle(ButtonStyle.Primary),
+          new ButtonBuilder()
+            .setCustomId('queue')
+            .setLabel('📋 Ver fila')
+            .setStyle(ButtonStyle.Secondary),
+        ),
       ],
     });
   }

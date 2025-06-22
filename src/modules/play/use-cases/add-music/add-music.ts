@@ -4,6 +4,9 @@ import { ValidationUrl } from '@/domain/use-cases/play/validation-url';
 import { MusicSessionRepository } from '@/infra/music-session/music-session-repository';
 import { getVoiceConnection } from '@discordjs/voice';
 import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
   GuildMember,
   InteractionReplyOptions,
   MessagePayload,
@@ -99,6 +102,18 @@ export class AddMusicUseCase implements AddMusic {
               text: member.user.username,
             },
           },
+        ],
+        components: [
+          new ActionRowBuilder<ButtonBuilder>().addComponents(
+            new ButtonBuilder()
+              .setCustomId('skip')
+              .setLabel('⏭️ Próxima música')
+              .setStyle(ButtonStyle.Primary),
+            new ButtonBuilder()
+              .setCustomId('queue')
+              .setLabel('📋 Ver fila')
+              .setStyle(ButtonStyle.Secondary),
+          ),
         ],
       },
     };
