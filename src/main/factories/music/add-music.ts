@@ -26,7 +26,7 @@ export const makePlayMusic = (): AddMusicController => {
       ),
       new AddMusicToSessionUseCase(musicSessionStateRepository),
       new PlayBackUseCase(
-        new PlayMusicUseCase(new YtdlHelper()),
+        new PlayMusicUseCase(new YtdlHelper(), musicSessionStateRepository),
         musicSessionStateRepository,
       ),
       musicSessionStateRepository,

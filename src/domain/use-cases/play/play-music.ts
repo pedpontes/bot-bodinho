@@ -1,5 +1,5 @@
-import { MusicSession } from '../../../states/music-session';
+import { VoiceBasedChannel } from 'discord.js';
 
 export interface PlayMusic {
-  play(session: MusicSession): Promise<void>;
+  play(id: VoiceBasedChannel['id']): Promise<void>;
 }

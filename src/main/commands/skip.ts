@@ -67,7 +67,7 @@ async function execute(interaction: ChatInputCommandInteraction<CacheType>) {
     await interaction.reply('🎶 Não há mais músicas na fila!');
   } else {
     new PlayBackUseCase(
-      new PlayMusicUseCase(new YtdlHelper()),
+      new PlayMusicUseCase(new YtdlHelper(), new MusicSessionStateRepository()),
       new MusicSessionStateRepository(),
     ).play(voiceChannel);
 

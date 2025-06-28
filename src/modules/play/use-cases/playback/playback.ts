@@ -43,7 +43,7 @@ export class PlayBackUseCase implements PlayBack {
       newSessionMusic,
     );
 
-    await this.playMusicUseCase.play(updatedSession);
+    await this.playMusicUseCase.play(voiceChannelId);
 
     player.on(AudioPlayerStatus.Idle, async () => {
       const currentSession = this.musicSessionRepository.load(voiceChannelId);
@@ -63,7 +63,7 @@ export class PlayBackUseCase implements PlayBack {
         return;
       }
 
-      await this.playMusicUseCase.play(currentSession);
+      await this.playMusicUseCase.play(voiceChannelId);
     });
   }
 }
