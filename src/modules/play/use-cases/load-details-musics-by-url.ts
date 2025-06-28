@@ -36,12 +36,14 @@ export class LoadDetailsMusicsByUrlUseCase implements LoadDetailsMusicsByUrl {
           url: ('https://' + url).replace(/^"|"$/g, ''),
         };
 
-        if (session && !session.queue?.length) {
+        if (session && !musicDetails.length) {
           this.addMusicToSessionUseCase.add(channelId, [music]);
+          musicDetails.push(music);
           resolve(music);
         } else {
           if (session) {
             this.addMusicToSessionUseCase.add(channelId, [music]);
+            musicDetails.push(music);
           } else {
             return;
           }

@@ -82,6 +82,14 @@ export class AddMusicUseCase implements AddMusic {
               },
             },
           ],
+          components: [
+            new ActionRowBuilder<ButtonBuilder>().addComponents(
+              new ButtonBuilder()
+                .setCustomId('queue')
+                .setLabel('📋 Ver fila')
+                .setStyle(ButtonStyle.Secondary),
+            ),
+          ],
         },
       };
     }
