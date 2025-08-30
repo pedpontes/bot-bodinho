@@ -66,10 +66,15 @@ async function execute(interaction: ChatInputCommandInteraction<CacheType>) {
     delete musicSessions[voiceChannel.id];
     await interaction.reply('🎶 Não há mais músicas na fila!');
   } else {
-    new PlayBackUseCase(
+    const playbackUseCase = new PlayBackUseCase(
       new PlayMusicUseCase(new YtdlHelper(), new MusicSessionStateRepository()),
       new MusicSessionStateRepository(),
-    ).play(voiceChannel);
+    );
+
+    // Notificar que uma música foi pulada para evitar skips duplicados
+    playbackUseCase.notifyMusicSkipped(voiceChannel.id);
+
+    playbackUseCase.play(voiceChannel);
 
     await interaction.reply({
       embeds: [
