@@ -6,6 +6,7 @@ import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { logger } from './logger';
+import { startServer } from './server';
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates],
@@ -114,6 +115,7 @@ client.on(Events.InteractionCreate, async (interation) => {
 
 client.once(Events.ClientReady, (readyClient: Client) => {
   console.log(`Pronto! Logado em ${readyClient.user?.tag}`);
+  startServer();
 });
 
 client.on(Events.Error, (error) => {
