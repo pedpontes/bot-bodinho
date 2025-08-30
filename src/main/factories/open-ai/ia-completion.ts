@@ -1,6 +1,6 @@
-import { IaCompletionController } from '@/modules/openai/controller/ia-completion';
-import { IaCompletionUseCase } from '@/modules/openai/use-cases/create-completion.ts/ia-completion/ia-completion';
-import { OpenAiCompletions } from '@/modules/openai/use-cases/openai-completion';
+import { IaCompletionController } from '@/modules/bot/openai/controller/ia-completion';
+import { IaCompletionUseCase } from '@/modules/bot/openai/use-cases/create-completion.ts/ia-completion/ia-completion';
+import { OpenAiCompletions } from '@/modules/bot/openai/use-cases/openai-completion';
 import { OpenAiHelper } from '@/services/openai';
 
 export const makeIaCompletion = (): IaCompletionController => {

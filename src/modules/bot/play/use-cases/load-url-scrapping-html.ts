@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio';
-import { LoadUrlScrappingHtml } from '../../../domain/use-cases/play/load-url-scrapping-html';
+import { LoadUrlScrappingHtml } from '../../../../domain/use-cases/play/load-url-scrapping-html';
 
 export class LoadUrlScrappingHtmlUseCase implements LoadUrlScrappingHtml {
   constructor(private readonly puppeteerHelper: any) {}

@@ -1,6 +1,6 @@
 import { YTProtocols } from '@/services/ytdl';
-import { LoadUrlScrappingHtml } from '../../../domain/use-cases/play/load-url-scrapping-html';
-import { ValidationUrl } from '../../../domain/use-cases/play/validation-url';
+import { LoadUrlScrappingHtml } from '../../../../domain/use-cases/play/load-url-scrapping-html';
+import { ValidationUrl } from '../../../../domain/use-cases/play/validation-url';
 
 export class ValidationUrlUseCase implements ValidationUrl {
   constructor(
