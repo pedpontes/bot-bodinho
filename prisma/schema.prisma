@@ -13,13 +13,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserProviders {
+  platform
+  discord
+}
+
 model User {
   id        String   @id @default(uuid())
   email     String?  @unique
   username  String?
   discordId String?  @unique
   avatar    String?
-  provider  String   @default("platform") // "discord" ou "platform"
+  provider  UserProviders   @default(platform)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   
@@ -41,7 +46,3 @@ model Upload {
   
   @@map("uploads")
 }
-
-
-
-

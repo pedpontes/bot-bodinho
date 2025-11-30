@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon",
     "build": "tsc --build",
-    "start": "cross-env NODE_ENV=production tsc && node dist/main/index.js"
+    "start": "cross-env NODE_ENV=production tsc && node dist/main/index.js",
+    "prisma:gen": "prisma generate",
+    "prisma:migration": "prisma migrate dev"
   },
   "_moduleAliases": {
     "@": "dist"
@@ -17,7 +19,7 @@
   "dependencies": {
     "@discordjs/opus": "^0.10.0",
     "@discordjs/voice": "^0.18.0",
-    "@prisma/client": "^6.2.1",
+    "@prisma/client": "5.19.0",
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
@@ -34,7 +36,7 @@
     "module-alias": "^2.2.3",
     "node-fetch": "^3.3.2",
     "openai": "^4.78.1",
-    "prisma": "^7.0.1",
+    "prisma": "5.19.0",
     "puppeteer": "^24.1.0",
     "winston": "^3.17.0",
     "ytdl-core": "^4.11.5"

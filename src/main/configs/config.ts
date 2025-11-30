@@ -44,4 +44,7 @@ export const env = {
     baseUrl: process.env.FLOWISE_BASE_URL,
     apiKey: process.env.FLOWISE_API_KEY,
   },
+  jwt: {
+    secret: process.env.JWT_SECRET,
+  },
 };

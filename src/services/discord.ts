@@ -15,7 +15,15 @@ export interface DiscordHelperProtocols {
 }
 
 export class DiscordHelper implements DiscordHelperProtocols {
-  constructor() {}
+  constructor() {
+    if (
+      !env.oauth.discord.clientId ||
+      !env.oauth.discord.clientSecret ||
+      !env.oauth.discord.redirectUri
+    ) {
+      throw new Error('(DiscordHelper) Discord OAuth configuration is missing');
+    }
+  }
 
   async loadUserInfo({
     token,

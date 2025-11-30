@@ -1,5 +1,8 @@
 export type UserInfoDiscordModel = {
   id: string;
+  username: string;
+  email: string | null;
+  avatar: string | null;
 };
 
 export type TokenResponseModel = {
