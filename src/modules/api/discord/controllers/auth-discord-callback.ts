@@ -1,3 +1,4 @@
+import { LoadAuthCredentialsByCodeDiscord } from '@/modules/api/discord/use-case/load-auth-credentials-by-code';
 import {
   Controller,
   HttpRequest,
@@ -8,18 +9,15 @@ import {
   ok,
   serverError,
 } from '@/presentation/protocols/helpers/http-helper';
-import { LoadCredentialsDiscord } from '@/modules/api/webhooks/discord/use-case/auth/load-credentials';
 
 export class DiscordAuthCallbackController implements Controller {
   constructor(
-    private readonly loadCredentialsDiscord: LoadCredentialsDiscord,
+    private readonly loadAuthCredentialsByCodeDiscord: LoadAuthCredentialsByCodeDiscord,
   ) {}
 
   async handle(request: HttpRequest): Promise<HttpResponse> {
     try {
-      const code =
-        (request.query && (request.query.code as string | undefined)) ||
-        (request.body && (request.body.code as string | undefined));
+      const code = request.query?.code as string;
 
       if (!code) {
         return badRequest(
@@ -29,7 +27,7 @@ export class DiscordAuthCallbackController implements Controller {
         );
       }
 
-      const result = await this.loadCredentialsDiscord.load(code);
+      const result = await this.loadAuthCredentialsByCodeDiscord.load(code);
 
       return ok(result);
     } catch (error) {

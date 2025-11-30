@@ -2,5 +2,7 @@ node_modules
 config.json
 .env
 dist
-postgres_data/
+docker/postgres_data/
+docker/nginx/
+docker/nginx/.env
 error.log

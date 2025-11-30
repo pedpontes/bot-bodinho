@@ -1,5 +1,5 @@
-import { AuthDiscordController } from '@/modules/api/auth/use-cases/discord/controllers/auth-discord';
+import { RedirectDiscordProviderController } from '@/modules/api/discord/controllers/redirect-discord-provider';
 
-export const makeAuthDiscord = (): AuthDiscordController => {
-  return new AuthDiscordController();
+export const makeAuthDiscord = (): RedirectDiscordProviderController => {
+  return new RedirectDiscordProviderController();
 };

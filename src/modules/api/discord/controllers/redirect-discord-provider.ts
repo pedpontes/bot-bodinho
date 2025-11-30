@@ -4,7 +4,7 @@ import {
   serverError,
 } from '@/presentation/protocols/helpers/http-helper';
 
-export class AuthDiscordController implements Controller {
+export class RedirectDiscordProviderController implements Controller {
   constructor() {}
 
   async handle(): Promise<HttpResponse> {

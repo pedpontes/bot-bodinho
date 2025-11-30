@@ -1,28 +1,34 @@
+import { AddDiscordAuthModel } from '@/domain/interfaces/discord';
 import {
   AddUserModel,
   UpdateUserModel,
   UserModel,
+  UserWithDiscordAuthModel,
 } from '@/domain/interfaces/user';
 import { db } from '@/main/prisma';
 
 export interface UserRepository {
-  add(user: AddUserModel): Promise<UserModel>;
+  add(user: AddUserModel, discordData: AddDiscordAuthModel): Promise<UserModel>;
   loadById(id: string): Promise<UserModel | undefined>;
-  loadByDiscordId(discordId: string): Promise<UserModel | undefined>;
+  loadByDiscordId(discordId: string): Promise<UserModel | null>;
   loadAll(): Promise<UserModel[]>;
   update(id: string, user: Partial<UserModel>): Promise<UserModel>;
   delete(id: string): Promise<void>;
 }
 
 export class PrismaUserRepository implements UserRepository {
-  async add(user: AddUserModel): Promise<UserModel> {
+  async add(
+    user: AddUserModel,
+    discordData: AddDiscordAuthModel,
+  ): Promise<UserModel> {
     const created = await db.user.create({
       data: {
-        email: user.email ?? undefined,
+        email: user.email,
         username: user.username,
-        discordId: user.discordId,
         avatar: user.avatar ?? undefined,
-        provider: user.provider ?? 'platform',
+        discordAuth: {
+          create: discordData,
+        },
       },
     });
 
@@ -39,12 +45,21 @@ export class PrismaUserRepository implements UserRepository {
     return user;
   }
 
-  async loadByDiscordId(discordId: string): Promise<UserModel | undefined> {
-    const user = await db.user.findUnique({
-      where: { discordId },
+  async loadByDiscordId(
+    discordId: string,
+  ): Promise<UserWithDiscordAuthModel | null> {
+    const user = await db.user.findFirst({
+      where: {
+        discordAuth: {
+          discordId: discordId,
+        },
+      },
+      include: {
+        discordAuth: true,
+      },
     });
 
-    if (!user) return undefined;
+    if (!user) return null;
 
     return user;
   }

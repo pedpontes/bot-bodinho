@@ -11,7 +11,8 @@ export interface DiscordHelperProtocols {
     token: string;
     tokenType: string;
   }): Promise<UserInfoDiscordModel>;
-  generateToken(code: string): Promise<TokenResponseModel>;
+  generateTokenByCode(code: string): Promise<TokenResponseModel>;
+  refreshToken(refreshToken: string): Promise<TokenResponseModel>;
 }
 
 export class DiscordHelper implements DiscordHelperProtocols {
@@ -48,7 +49,7 @@ export class DiscordHelper implements DiscordHelperProtocols {
     }
   }
 
-  async generateToken(code: string): Promise<TokenResponseModel> {
+  async generateTokenByCode(code: string): Promise<TokenResponseModel> {
     try {
       const data = {
         client_id: env.oauth.discord.clientId,
@@ -76,6 +77,37 @@ export class DiscordHelper implements DiscordHelperProtocols {
       );
       throw new Error(
         '(DiscordHelper.generateToken) Error generating Discord token',
+      );
+    }
+  }
+
+  async refreshToken(refreshToken: string): Promise<TokenResponseModel> {
+    try {
+      const data = {
+        client_id: env.oauth.discord.clientId,
+        client_secret: env.oauth.discord.clientSecret,
+        grant_type: 'refresh_token',
+        refresh_token: refreshToken,
+        redirect_uri: env.oauth.discord.redirectUri,
+      };
+
+      const response = await axios.post(
+        'https://discord.com/api/oauth2/token',
+        qs.stringify(data),
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        },
+      );
+      return response.data;
+    } catch (error: any) {
+      console.error(
+        '(DiscordHelper.refreshToken) ',
+        error.response?.data || error,
+      );
+      throw new Error(
+        '(DiscordHelper.refreshToken) Error refreshing Discord token',
       );
     }
   }

@@ -1,3 +1,3 @@
-export type JWTPayloadModel<T = any> = {
-  [key: string]: T;
-};
+import { UserModel } from './user';
+
+export type JWTPayloadModel = UserModel;

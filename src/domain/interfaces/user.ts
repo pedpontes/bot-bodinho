@@ -1,21 +1,22 @@
-export type UserProviders = 'platform' | 'discord';
-
-export enum UserProvidersEnum {
-  PLATFORM = 'platform',
-  DISCORD = 'discord',
-}
+import { DiscordAuthModel } from './discord';
 
 export type UserModel = {
   id: string;
-  discordId: string | null;
   username: string | null;
-  email: string | null;
+  email: string;
   avatar: string | null;
-  provider: UserProviders;
+  discordAuthId: DiscordAuthModel['id'];
   createdAt: Date;
   updatedAt: Date;
 };
 
-export type AddUserModel = Omit<UserModel, 'id' | 'createdAt' | 'updatedAt'>;
+export type AddUserModel = Omit<
+  UserModel,
+  'id' | 'createdAt' | 'updatedAt' | 'discordAuthId'
+>;
 
 export type UpdateUserModel = Partial<AddUserModel>;
+
+export type UserWithDiscordAuthModel = UserModel & {
+  discordAuth: DiscordAuthModel;
+};

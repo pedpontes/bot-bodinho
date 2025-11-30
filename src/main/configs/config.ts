@@ -32,9 +32,9 @@ export const env = {
   },
   oauth: {
     discord: {
-      clientSecret: process.env.DISCORD_CLIENT_SECRET,
-      redirectUri: process.env.DISCORD_REDIRECT_URI,
-      clientId: process.env.DISCORD_CLIENT_ID,
+      clientSecret: process.env.OAUTH2_CLIENT_SECRET,
+      redirectUri: process.env.OAUTH2_REDIRECT_URI,
+      clientId: process.env.OAUTH2_CLIENT_ID,
     },
   },
   token: process.env.TOKEN,
