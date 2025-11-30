@@ -1,5 +1,5 @@
 import { PlayMusic } from '@/domain/use-cases/play/play-music';
-import { MusicSessionRepository } from '@/infra/music-session/music-session-repository';
+import { MusicSessionRepository } from '@/infra/local/music-session/music-session-repository';
 import {
   AudioPlayerStatus,
   createAudioPlayer,

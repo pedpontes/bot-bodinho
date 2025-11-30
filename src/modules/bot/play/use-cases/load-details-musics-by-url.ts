@@ -1,6 +1,6 @@
 import { MusicDetails } from '@/domain/interfaces/music';
 import { LoadDetailsMusicsByUrl } from '@/domain/use-cases/play/load-details-musics-by-url';
-import { MusicSessionRepository } from '@/infra/music-session/music-session-repository';
+import { MusicSessionRepository } from '@/infra/local/music-session/music-session-repository';
 import { ChildProcessWithoutNullStreams, spawn } from 'node:child_process';
 import { AddMusicToSession } from '../controllers/add-music/add-music-protocols';
 

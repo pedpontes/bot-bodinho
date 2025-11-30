@@ -2,7 +2,6 @@ node_modules
 config.json
 .env
 dist
-music/*
 postgres_data/
 prisma/migrations/
 error.log

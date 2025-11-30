@@ -1,7 +1,7 @@
 import { AddMusicToSession } from '@/domain/use-cases/play/add-music-to-session';
 import { LoadDetailsMusicsByUrl } from '@/domain/use-cases/play/load-details-musics-by-url';
 import { ValidationUrl } from '@/domain/use-cases/play/validation-url';
-import { MusicSessionRepository } from '@/infra/music-session/music-session-repository';
+import { MusicSessionRepository } from '@/infra/local/music-session/music-session-repository';
 import { getVoiceConnection } from '@discordjs/voice';
 import {
   ActionRowBuilder,

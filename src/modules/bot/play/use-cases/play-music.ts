@@ -1,4 +1,4 @@
-import { MusicSessionRepository } from '@/infra/music-session/music-session-repository';
+import { MusicSessionRepository } from '@/infra/local/music-session/music-session-repository';
 import { YTProtocols } from '@/services/ytdl';
 import { createAudioResource, StreamType } from '@discordjs/voice';
 import { VoiceBasedChannel } from 'discord.js';

@@ -1,4 +1,4 @@
-import { MusicSessionRepository } from '@/infra/music-session/music-session-repository';
+import { MusicSessionRepository } from '@/infra/local/music-session/music-session-repository';
 import { VoiceBasedChannel } from 'discord.js';
 
 export class AleradyJoinVoiceChannelUseCase {

@@ -30,6 +30,13 @@ export const env = {
     email: process.env.EMAIL,
     pass: process.env.PASSWORD,
   },
+  oauth: {
+    discord: {
+      clientSecret: process.env.DISCORD_CLIENT_SECRET,
+      redirectUri: process.env.DISCORD_REDIRECT_URI,
+      clientId: process.env.DISCORD_CLIENT_ID,
+    },
+  },
   token: process.env.TOKEN,
   clientId: process.env.CLIENT_ID,
   openaiApiKey: process.env.OPENAI_API_KEY,

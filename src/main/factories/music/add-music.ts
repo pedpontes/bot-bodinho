@@ -1,4 +1,4 @@
-import { MusicSessionStateRepository } from '@/infra/music-session/music-session-repository';
+import { MusicSessionStateRepository } from '@/infra/local/music-session/music-session-repository';
 import { AddMusicController } from '@/modules/bot/play/controllers/add-music/add-music';
 import { AddMusicToSessionUseCase } from '@/modules/bot/play/use-cases/add-music-to-session';
 import { AddMusicUseCase } from '@/modules/bot/play/use-cases/add-music/add-music';

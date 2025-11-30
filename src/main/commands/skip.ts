@@ -1,4 +1,4 @@
-import { MusicSessionStateRepository } from '@/infra/music-session/music-session-repository';
+import { MusicSessionStateRepository } from '@/infra/local/music-session/music-session-repository';
 import { PlayMusicUseCase } from '@/modules/bot/play/use-cases/play-music';
 import { PlayBackUseCase } from '@/modules/bot/play/use-cases/playback/playback';
 import { YtdlHelper } from '@/services/ytdl';

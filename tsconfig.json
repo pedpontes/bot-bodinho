@@ -111,6 +111,6 @@
       "@/*": ["*"]
     } /* Skip type checking all .d.ts files. */
   },
-  "include": ["src/**/*", "client.d.ts"],
+  "include": ["src/**/*", "src/types/client.d.ts"],
   "exclude": ["node_modules", "dist"]
 }

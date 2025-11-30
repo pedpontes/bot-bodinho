@@ -5,6 +5,11 @@ export const badRequest = (error: Error): HttpResponse => ({
   body: error,
 });
 
+export const redirect = (url: string): HttpResponse => ({
+  statusCode: 302,
+  body: url,
+});
+
 export const unprocessableEntity = (error: Error): HttpResponse => ({
   statusCode: 422,
   body: error,

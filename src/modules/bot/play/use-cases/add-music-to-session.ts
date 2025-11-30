@@ -1,5 +1,5 @@
 import { MusicDetails } from '@/domain/interfaces/music';
-import { MusicSessionRepository } from '@/infra/music-session/music-session-repository';
+import { MusicSessionRepository } from '@/infra/local/music-session/music-session-repository';
 import { randomUUID } from 'crypto';
 import { VoiceBasedChannel } from 'discord.js';
 import {
