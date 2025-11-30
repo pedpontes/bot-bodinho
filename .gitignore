@@ -3,5 +3,4 @@ config.json
 .env
 dist
 postgres_data/
-prisma/migrations/
 error.log
