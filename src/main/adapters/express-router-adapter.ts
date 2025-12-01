@@ -16,10 +16,11 @@ export const adaptRoute = (controller: Controller) => {
       query: request.query,
       body: request.body,
       file: request.file,
+      files: request?.files,
       path: request.path,
       method: request.method?.toLowerCase(),
-      files: request?.files,
       headers: request.headers,
+      user: (request as any).user,
     };
 
     const controllerHttpResponse: HttpResponse =

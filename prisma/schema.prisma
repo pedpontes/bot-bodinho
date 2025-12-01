@@ -18,6 +18,11 @@ enum UserProviders {
   discord
 }
 
+enum UserRole {
+  admin
+  user
+}
+
 model User {
   id        String   @id @default(uuid())
   email     String  @unique
@@ -29,6 +34,8 @@ model User {
   
   discordAuth DiscordAuth @relation(fields: [discordAuthId], references: [id])
   discordAuthId String @unique
+
+  role UserRole @default(user)
 
   uploads   Upload[]
   

@@ -3,8 +3,8 @@ export interface RequestProtocolAdapter {
   query?: any;
   params?: any;
   body?: any;
-  file?: any;
   path?: string;
   method?: string;
+  file?: any;
   files?: any;
 }

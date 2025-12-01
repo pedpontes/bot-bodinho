@@ -1,3 +1,5 @@
+import { JWTPayloadModel } from '@/domain/interfaces/jwt';
+
 export interface HttpResponse {
   statusCode: number;
   body: any;
@@ -13,7 +15,7 @@ export interface RequestQueryString {
   [key: string]: undefined | string | string[];
 }
 
-export interface File {
+export interface FileAdapterModel {
   fieldname: string;
   originalname: string;
   encoding: string;
@@ -29,9 +31,10 @@ export interface HttpRequest {
   params?: any;
   query?: any;
   body?: any;
-  file?: File;
   path?: string;
   method?: string;
-  files?: File[];
+  file?: FileAdapterModel;
+  files?: FileAdapterModel[];
   ip?: any;
+  user?: JWTPayloadModel;
 }

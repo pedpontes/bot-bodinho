@@ -44,6 +44,7 @@ export class LoadAuthCredentialsDiscordUseCase
         username: userInfo.username,
         email: userInfo.email,
         avatar: userInfo.avatar,
+        role: 'user',
       };
 
       user = await this.userRepository.add(newUser, {
