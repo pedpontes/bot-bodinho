@@ -31,29 +31,43 @@ export class PlayMusicUseCase implements PlayMusic {
       session.proc = null;
     }
 
-    const proc = this.YTHelper.loadMusic(url);
+    const isLocalFile = url.startsWith('file://');
+    let resource;
 
-    this.musicSessionRepository.update(id, {
-      proc,
-    });
-
-    const { stderr, stdout } = proc;
-
-    const pass = new PassThrough({ highWaterMark: 1 << 25 });
-    stdout.pipe(pass);
-
-    stderr.on('data', (data) => {
-      this.musicSessionRepository.update(id, {
-        proc: null,
+    if (isLocalFile) {
+      const filePath = url.replace('file://', '');
+      const { createReadStream } = require('fs');
+      const stream = createReadStream(filePath);
+      resource = createAudioResource(stream, {
+        inputType: StreamType.Arbitrary,
+        inlineVolume: true,
+        metadata: 'Música tocando',
       });
-      console.error(`[ERROR] [PLAY_MUSIC] ${data}`);
-    });
+    } else {
+      const proc = this.YTHelper.loadMusic(url);
 
-    const resource = createAudioResource(pass, {
-      inputType: StreamType.Arbitrary,
-      inlineVolume: true,
-      metadata: 'Música tocando',
-    });
+      this.musicSessionRepository.update(id, {
+        proc,
+      });
+
+      const { stderr, stdout } = proc;
+      const pass = new PassThrough({ highWaterMark: 1 << 25 });
+      stdout.pipe(pass);
+
+      stderr.on('data', (data) => {
+        this.musicSessionRepository.update(id, {
+          proc: null,
+        });
+        console.error(`[ERROR] [PLAY_MUSIC] ${data}`);
+      });
+
+      resource = createAudioResource(pass, {
+        inputType: StreamType.Arbitrary,
+        inlineVolume: true,
+        metadata: 'Música tocando',
+      });
+    }
+
     session.player.play(resource);
     session.connection.subscribe(session.player);
   }

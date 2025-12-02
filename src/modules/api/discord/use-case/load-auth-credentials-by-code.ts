@@ -1,3 +1,4 @@
+import { DiscordAuthModel } from '@/domain/interfaces/discord';
 import { AddUserModel, UserModel } from '@/domain/interfaces/user';
 import { DiscordAuthRepository } from '@/infra/prisma/discord-auth/discord-auth-prisma-repository';
 import { UserRepository } from '@/infra/prisma/user-repository';
@@ -47,7 +48,7 @@ export class LoadAuthCredentialsDiscordUseCase
         role: 'user',
       };
 
-      user = await this.userRepository.add(newUser, {
+      const created = await this.userRepository.add(newUser, {
         accessToken: token.access_token,
         discordId: userInfo.id,
         expiresAt: token.expires_in,
@@ -55,6 +56,8 @@ export class LoadAuthCredentialsDiscordUseCase
         scope: token.scope,
         tokenType: token.token_type,
       });
+
+      user = { ...created, discordAuth: {} as DiscordAuthModel };
     } else {
       await this.discordAuthRepository.update(user.discordAuthId, {
         accessToken: token.access_token,
@@ -65,7 +68,9 @@ export class LoadAuthCredentialsDiscordUseCase
       });
     }
 
-    const payload = user;
+    const { discordAuth, ...rest } = user;
+
+    const payload = rest;
 
     const accessToken = await this.jwtHelper.generateToken(payload, '1d');
 

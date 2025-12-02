@@ -10,7 +10,8 @@ import { db } from '@/main/prisma';
 export interface UserRepository {
   add(user: AddUserModel, discordData: AddDiscordAuthModel): Promise<UserModel>;
   loadById(id: string): Promise<UserModel | undefined>;
-  loadByDiscordId(discordId: string): Promise<UserModel | null>;
+  loadByIdWithDiscordAuth(id: string): Promise<UserWithDiscordAuthModel | null>;
+  loadByDiscordId(discordId: string): Promise<UserWithDiscordAuthModel | null>;
   loadAll(): Promise<UserModel[]>;
   update(id: string, user: Partial<UserModel>): Promise<UserModel>;
   delete(id: string): Promise<void>;
@@ -41,6 +42,21 @@ export class UserPrismaRepository implements UserRepository {
     });
 
     if (!user) return undefined;
+
+    return user;
+  }
+
+  async loadByIdWithDiscordAuth(
+    id: string,
+  ): Promise<UserWithDiscordAuthModel | null> {
+    const user = await db.user.findUnique({
+      where: { id },
+      include: {
+        discordAuth: true,
+      },
+    });
+
+    if (!user) return null;
 
     return user;
   }

@@ -6,10 +6,18 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { logger } from './logger';
 
+let botClient: Client;
+
+export const getClient = (): Client => {
+  return botClient;
+};
+
 export const startBot = async (): Promise<void> => {
   const client = new Client({
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates],
   });
+
+  botClient = client;
 
   client.commands = new Collection();
 
