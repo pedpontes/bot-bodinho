@@ -55,3 +55,9 @@ export const noContent = (): HttpResponse => ({
   statusCode: 204,
   body: null,
 });
+
+export const okWithCookie = (data: any, cookieName: string, cookieValue: string): HttpResponse => ({
+  statusCode: 200,
+  body: data,
+  headers: [{ key: 'Set-Cookie', value: `${cookieName}=${cookieValue}; HttpOnly; Secure; SameSite=Strict; Path=/` }],
+});

@@ -6,14 +6,7 @@ export async function ensureAuthenticateUser(
   res: Response,
   next: NextFunction,
 ): Promise<void> {
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader) {
-    res.status(401).json({ message: 'Token missing' });
-    return;
-  }
-
-  const [, token] = authHeader.split(' ');
+  const token = req.cookies?.token;
 
   if (!token) {
     res.status(401).json({ message: 'Token missing' });

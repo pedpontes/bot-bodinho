@@ -71,10 +71,7 @@ export class DiscordHelper implements DiscordHelperProtocols {
 
       return response.data;
     } catch (error: any) {
-      console.error(
-        '(DiscordHelper.generateToken) ',
-        error.response?.data || error,
-      );
+      console.error('(DiscordHelper.generateToken) ', error);
       throw new Error(
         '(DiscordHelper.generateToken) Error generating Discord token',
       );

@@ -33,24 +33,25 @@ export const adaptRoute = (controller: Controller) => {
       headers: headersResponse,
     } = controllerHttpResponse;
 
+    const headers: { [key: string]: string } = {};
+
+    headersResponse?.forEach(({ key, value }) => {
+      headers[key] = value;
+    });
+
     if (body instanceof Readable) {
       response.on('close', () => {
         abortController.abort();
       });
 
-      const headers: { [key: string]: string } = {};
-
-      headersResponse?.forEach(({ key, value }) => {
-        headers[key] = value;
-      });
-
-      // Ordem correta
       response.writeHead(206, headers);
+
       body.pipe(response);
 
       return;
     }
 
+    response.set(headers);
     response.status(statusCode);
 
     if (statusCode >= 200 && statusCode <= 299) {

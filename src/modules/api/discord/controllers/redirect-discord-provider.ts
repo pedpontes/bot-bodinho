@@ -10,7 +10,7 @@ export class RedirectDiscordProviderController implements Controller {
   async handle(): Promise<HttpResponse> {
     try {
       return redirect(
-        'https://discord.com/oauth2/authorize?client_id=958710266051301396&response_type=code&redirect_uri=https%3A%2F%2Fdodinho-discord.ddns.net%2Fwebhook%2Fdiscord%2Fauth&scope=identify+guilds+email',
+        'https://discord.com/oauth2/authorize?client_id=958710266051301396&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fdiscord%2Fcallback&scope=identify+guilds+email',
       );
     } catch (error) {
       return serverError(error);

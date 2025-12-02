@@ -16,7 +16,7 @@ export interface UserRepository {
   delete(id: string): Promise<void>;
 }
 
-export class PrismaUserRepository implements UserRepository {
+export class UserPrismaRepository implements UserRepository {
   async add(
     user: AddUserModel,
     discordData: AddDiscordAuthModel,

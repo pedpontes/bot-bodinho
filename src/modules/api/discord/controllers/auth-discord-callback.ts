@@ -6,7 +6,7 @@ import {
 } from '@/presentation/protocols';
 import {
   badRequest,
-  ok,
+  okWithCookie,
   serverError,
 } from '@/presentation/protocols/helpers/http-helper';
 
@@ -27,9 +27,10 @@ export class DiscordAuthCallbackController implements Controller {
         );
       }
 
-      const result = await this.loadAuthCredentialsByCodeDiscord.load(code);
+      const { accessToken, user } =
+        await this.loadAuthCredentialsByCodeDiscord.load(code);
 
-      return ok(result);
+      return okWithCookie(user, 'token', accessToken);
     } catch (error) {
       return serverError(error);
     }
