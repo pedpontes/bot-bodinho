@@ -21,7 +21,15 @@ export class LoadUploadsPaginationController implements Controller {
       if (!user) return unauthorized();
 
       const uploads = await this.loadUploadsPaginationUseCase.loadAll(
-        query,
+        {
+          filters: query.filters,
+          limit: query.limit ? Number(query.limit) : undefined,
+          orderBy: query.orderBy || {
+            updatedAt: 'desc',
+          },
+          page: query.page ? Number(query.page) || 1 : 1,
+          search: query.search,
+        },
         user,
       );
 

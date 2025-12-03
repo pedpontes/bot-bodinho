@@ -15,11 +15,10 @@ export class FileManager {
     bucket: AllowedPaths,
     dir?: string,
   ): Promise<FileAdapterModel> {
-    const targetDir = this.PATHS[bucket];
-    const targetPath = dir
-      ? join(targetDir, dir, file.filename)
-      : join(targetDir, file.filename);
-    await fs.mkdir(targetDir, { recursive: true });
+    const baseDir = dir ? join(this.PATHS[bucket], dir) : this.PATHS[bucket];
+    const targetPath = join(baseDir, file.filename);
+
+    await fs.mkdir(baseDir, { recursive: true });
     await fs.rename(file.path, targetPath);
 
     return {

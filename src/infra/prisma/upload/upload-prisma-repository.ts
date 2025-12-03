@@ -70,8 +70,8 @@ export class UploadPrismaRepository implements UploadRepository {
       data: uploads,
       page: page || 1,
       limit: limit || total,
-      total: {
-        count: total,
+      count: {
+        total: total,
       },
     };
   }
