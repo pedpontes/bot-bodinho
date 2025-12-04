@@ -7,12 +7,14 @@ import { webhookRouter } from './routes/webhook/webhook.routes';
 const app = express();
 const PORT = process.env.PORT || 8080;
 
+app.use(
+  cors({
+    origin: ['http://localhost:3000', 'https://bot-bodinho-front.vercel.app'],
+    credentials: true,
+  }),
+);
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true
-}));
 
 app.use('/api', router);
 app.use('/webhook', webhookRouter);

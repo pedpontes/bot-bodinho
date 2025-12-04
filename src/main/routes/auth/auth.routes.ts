@@ -10,6 +10,8 @@ authRouter.get('/me', ensureAuthenticateUser, adaptRoute(makeLoadUser()));
 authRouter.get('/logout', (_, res) => {
   res.cookie('token', '', {
     httpOnly: true,
+    secure: true,
+    sameSite: 'none',
     expires: new Date(0),
     path: '/',
   });

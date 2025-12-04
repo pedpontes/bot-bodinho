@@ -59,5 +59,5 @@ export const noContent = (): HttpResponse => ({
 export const okWithCookie = (data: any, cookieName: string, cookieValue: string): HttpResponse => ({
   statusCode: 200,
   body: data,
-  headers: [{ key: 'Set-Cookie', value: `${cookieName}=${cookieValue}; HttpOnly; Secure; SameSite=Strict; Path=/` }],
+  headers: [{ key: 'Set-Cookie', value: `${cookieName}=${cookieValue}; HttpOnly; Secure; SameSite=None; Path=/` }],
 });
