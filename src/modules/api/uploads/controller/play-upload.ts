@@ -9,14 +9,14 @@ import {
   serverError,
   unauthorized,
 } from '@/presentation/protocols/helpers/http-helper';
-import { PlayUploadUseCase } from '../use-case/play-upload';
-import { PlayUploadMusicUseCase } from '../use-case/play-upload-music';
 import path from 'path';
+import { PlayUploadUseCase } from '../use-case/play-upload';
+import { PlayUploadMusic } from '../use-case/play-upload-music';
 
 export class PlayUploadController implements Controller {
   constructor(
     private readonly playUploadUseCase: PlayUploadUseCase,
-    private readonly playUploadMusicUseCase: PlayUploadMusicUseCase,
+    private readonly playUploadMusicUseCase: PlayUploadMusic,
   ) {}
 
   async handle(request: HttpRequest): Promise<HttpResponse> {
@@ -30,6 +30,7 @@ export class PlayUploadController implements Controller {
       );
 
       const filePath = path.resolve(upload.path);
+
       await this.playUploadMusicUseCase.execute(
         filePath,
         user.discordAuth.discordId,

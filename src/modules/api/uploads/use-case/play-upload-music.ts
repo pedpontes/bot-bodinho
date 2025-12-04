@@ -1,8 +1,8 @@
-import { VoiceBasedChannel } from 'discord.js';
 import { MusicSessionRepository } from '@/infra/local/music-session/music-session-repository';
+import { getClient } from '@/main/bot-app';
 import { AddMusicToSessionUseCase } from '@/modules/bot/play/use-cases/add-music-to-session';
 import { PlayBackUseCase } from '@/modules/bot/play/use-cases/playback/playback';
-import { getClient } from '@/main/bot-app';
+import { VoiceBasedChannel } from 'discord.js';
 import path from 'path';
 
 export interface PlayUploadMusic {
@@ -24,7 +24,9 @@ export class PlayUploadMusicUseCase implements PlayUploadMusic {
     const client = getClient();
 
     if (!client) {
-      throw new Error('Bot do Discord não está inicializado');
+      throw new Error(
+        '(playUploadMusicUseCase) Bot do Discord não está inicializado',
+      );
     }
 
     const guilds = client.guilds.cache;
