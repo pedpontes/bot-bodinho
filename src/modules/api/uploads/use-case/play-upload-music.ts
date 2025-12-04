@@ -1,7 +1,8 @@
-import { Client, VoiceBasedChannel } from 'discord.js';
 import { MusicSessionRepository } from '@/infra/local/music-session/music-session-repository';
+import { getClient } from '@/main/bot-app';
 import { AddMusicToSessionUseCase } from '@/modules/bot/play/use-cases/add-music-to-session';
 import { PlayBackUseCase } from '@/modules/bot/play/use-cases/playback/playback';
+import { VoiceBasedChannel } from 'discord.js';
 import path from 'path';
 
 export interface PlayUploadMusic {
@@ -10,14 +11,25 @@ export interface PlayUploadMusic {
 
 export class PlayUploadMusicUseCase implements PlayUploadMusic {
   constructor(
-    private readonly client: Client,
     private readonly musicSessionRepository: MusicSessionRepository,
     private readonly addMusicToSessionUseCase: AddMusicToSessionUseCase,
     private readonly playBackUseCase: PlayBackUseCase,
   ) {}
 
-  async execute(filePath: string, discordId: string, filename: string): Promise<void> {
-    const guilds = this.client.guilds.cache;
+  async execute(
+    filePath: string,
+    discordId: string,
+    filename: string,
+  ): Promise<void> {
+    const client = getClient();
+
+    if (!client) {
+      throw new Error(
+        '(playUploadMusicUseCase) Bot do Discord não está inicializado',
+      );
+    }
+
+    const guilds = client.guilds.cache;
     let voiceChannel: VoiceBasedChannel | null = null;
 
     for (const guild of guilds.values()) {
@@ -32,8 +44,17 @@ export class PlayUploadMusicUseCase implements PlayUploadMusic {
       throw new Error('Você precisa estar em um canal de voz');
     }
 
-    const session = this.musicSessionRepository.load(voiceChannel.id);
-    const isPlaying = session?.queue && session.queue.length > 0;
+    let session = this.musicSessionRepository.load(voiceChannel.id);
+
+    if (!session) {
+      session = this.musicSessionRepository.add(voiceChannel.id, {
+        connection: undefined,
+        player: undefined,
+        queue: [],
+      });
+    }
+
+    const isPlaying = session.queue && session.queue.length > 0;
 
     await this.addMusicToSessionUseCase.add(voiceChannel.id, [
       {

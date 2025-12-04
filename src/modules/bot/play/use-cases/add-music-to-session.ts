@@ -17,11 +17,12 @@ export class AddMusicToSessionUseCase implements AddMusicToSession {
   ): Promise<MusicSession> {
     const musicsFormatted = [];
 
-    const { queue = [] } = this.musicSessionRepository.load(id)!;
-
-    if (!this.musicSessionRepository.load(id)) {
+    const session = this.musicSessionRepository.load(id);
+    if (!session) {
       throw new Error(`Session with id ${id} does not exist.`);
     }
+
+    const queue = session.queue || [];
 
     musicsFormatted.push(
       ...musics.map((music) => {
